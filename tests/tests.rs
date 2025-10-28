@@ -1,7 +1,7 @@
 use numeracy::matrices::matrix::Matrix;
 use numeracy::matrices::enums::DataTypes;
 
-use numeracy::cartesian_product;
+use numeracy::combinatorics::cartesian_product;
 
 
 #[test]

@@ -1,4 +1,4 @@
-use crate::cartesian_product;
+use crate::combinatorics::cartesian_product;
 use crate::matrices::matrix::Matrix;
 use crate::matrices::traits::IntoDataType;
 use crate::matrices::enums::MatrixError;

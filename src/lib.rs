@@ -1,2 +1,2 @@
 pub mod matrices;
-pub mod cartesian_product;
+pub mod combinatorics;
