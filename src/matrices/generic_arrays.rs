@@ -200,13 +200,13 @@ impl<T:Clone> Matrix<T> {
                 Err(MatrixError::InvalidBounds)
             } else {
                 let mut new_shape = bounds.clone().map(|range| range.len()).to_vec();
-                let lowest_bound = bounds.clone().map(|range| range.min().unwrap()).to_vec();
+                //let lowest_bound = bounds.clone().map(|range| range.min().unwrap()).to_vec();
 
-                let mut new_mat = Matrix {
-                    shape:new_shape.clone(),
-                    array:vec![self.array[0].clone();new_shape.iter().product()],
-                    dtype:self.dtype
-                };
+                //let mut new_mat = Matrix {
+                //    shape:new_shape.clone(),
+                //    array:vec![self.array[0].clone();new_shape.iter().product()],
+                //    dtype:self.dtype
+                //};
 
                 //let iters = bounds.map(|range| range.collect::<Vec<usize>>());
                 //let c = cartesian_product::cartesian_product(iters);
