@@ -200,12 +200,45 @@ impl<T:Clone> Matrix<T> {
                 Err(MatrixError::InvalidBounds)
             } else {
                 let mut new_shape = bounds.clone().map(|range| range.len()).to_vec();
+                let lowest_bound = bounds.clone().map(|range| range.min().unwrap()).to_vec();
+
+                let mut new_mat = Matrix {
+                    shape:new_shape.clone(),
+                    array:vec![self.array[0].clone();new_shape.iter().product()],
+                    dtype:self.dtype
+                };
+
+                //let iters = bounds.map(|range| range.collect::<Vec<usize>>());
+                //let c = cartesian_product::cartesian_product(iters);
+                //for mut indices in c {
+                //    println!("start");
+                //    println!("i1, {:?}", indices);
+                //    //let indices = indices.iter_mut().map(|i| *i-1).collect::<Vec<usize>>();
+                //    //println!("i2, {:?}", indices);
+//
+                //    let first_idx = self.linear_index_of(new_mat.shape.clone());
+                //    let lb_idx = self.linear_index_of(lowest_bound.clone());
+                //    println!("first idx {}", first_idx);
+                //    println!("lowest bound {:?}, lb_idx {}", lowest_bound, lb_idx);
+//
+                //    let linear_index = self.linear_index_of(indices.clone());
+                //    let idx_val = self.array[linear_index].clone();
+//
+                //    let new_linear_idx = new_mat.linear_index_of(indices.clone());
+                //    println!("{:?}, {:?}, {}, {}", self.shape, new_mat.shape, linear_index, new_linear_idx);
+                //    new_mat.array[new_linear_idx-lb_idx] = idx_val;
+                //    println!("end");
+                //}
+//
+                //Ok(new_mat)
+                
                 new_shape.reverse();
  
                 let mut new_arr = vec![];
                 let iters = bounds.map(|range| range.collect::<Vec<usize>>());
-                let c = cartesian_product::cartesian_product(iters);
-                for indices in c {
+                let mut combinations = cartesian_product::cartesian_product(iters);
+                combinations.sort();
+                for indices in combinations {
                     let linear_index = self.linear_index_of(indices.clone());
                     let idx_val = self.array[linear_index].clone();
                     new_arr.push(idx_val);
@@ -363,8 +396,8 @@ impl<T:Clone> Matrix<T> {
                 let other_axes_size = other.shape[axis];
 
 
-                println!("{:?}, {:?}, {:?}, {:?}", self.shape, other.shape, shape1, shape2);
-                println!("terms {}, {}, {}, {}", num_terms_per_axis, num_terms_after_axis, self_axes_size, other_axes_size);
+                //println!("{:?}, {:?}, {:?}, {:?}", self.shape, other.shape, shape1, shape2);
+                //println!("terms {}, {}, {}, {}", num_terms_per_axis, num_terms_after_axis, self_axes_size, other_axes_size);
 
                 let mut v = vec![];
                 let mut new_shape = self.shape[0..axis].to_vec();

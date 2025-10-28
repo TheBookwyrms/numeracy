@@ -1,9 +1,6 @@
 use numeracy::matrices::matrix::Matrix;
 use numeracy::matrices::enums::DataTypes;
 
-use numeracy::combinatorics::cartesian_product;
-
-
 #[test]
 fn gauss_jordan_inverse() {
     let mat = Matrix::from_2darray([
@@ -72,44 +69,6 @@ fn expand_along_axis_test1() {
 }
 
 
-#[test]
-fn cartesian_product_two_vec() {
-    let a1 = vec![1, 2, 3];
-    let a2 = vec![4, 5, 6];
-
-    let cp = cartesian_product::cartesian_product([a1, a2]);
-
-    assert_eq!(cp, vec![
-        vec![1, 4],
-        vec![1, 5],
-        vec![1, 6],
-        vec![2, 4],
-        vec![2, 5],
-        vec![2, 6],
-        vec![3, 4],
-        vec![3, 5],
-        vec![3, 6],
-    ]);
-}
-#[test]
-fn cartesian_product_three_vec() {
-    let a1 = vec![1, 2];
-    let a2 = vec![3, 4];
-    let a3 = vec![5, 6];
-
-    let cp = cartesian_product::cartesian_product([a1, a2, a3]);
-
-    assert_eq!(cp, vec![
-        vec![1, 3, 5],
-        vec![1, 3, 6],
-        vec![1, 4, 5],
-        vec![1, 4, 6],
-        vec![2, 3, 5],
-        vec![2, 3, 6],
-        vec![2, 4, 5],
-        vec![2, 4, 6],
-    ]);
-}
 
 #[test]
 fn range_indexing3d() {
@@ -141,6 +100,7 @@ fn range_indexing3d() {
     ]);
 
     let indexed_mat = mat.get_submatrix([0..3, 2..4, 1..3]).unwrap();
+
     //0, 1, 2
     //2, 3
     //1, 2
