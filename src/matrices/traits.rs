@@ -1,4 +1,4 @@
-use crate::enums::DataTypes;
+use crate::matrices::enums::DataTypes;
 
 /// numerical trait for numerical data types that are valid in matrix
 pub trait Numerical {}

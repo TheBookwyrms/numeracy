@@ -1,5 +1,5 @@
-use crate::matrix::Matrix;
-use crate::enums::DataTypes;
+use crate::matrices::matrix::Matrix;
+use crate::matrices::enums::DataTypes;
 
 
 impl PartialEq for Matrix<usize> {

@@ -1,7 +1,7 @@
 use crate::cartesian_product;
-use crate::matrix::Matrix;
-use crate::traits::IntoDataType;
-use crate::enums::MatrixError;
+use crate::matrices::matrix::Matrix;
+use crate::matrices::traits::IntoDataType;
+use crate::matrices::enums::MatrixError;
 
 use std::ops::{Index, IndexMut, Range};
 use std::fmt::{Debug, Display};

@@ -1,4 +1,4 @@
-use crate::matrix::Matrix;
+use crate::matrices::matrix::Matrix;
 
 
 impl PartialEq for Matrix<f64> {

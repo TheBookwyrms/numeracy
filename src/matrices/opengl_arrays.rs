@@ -1,5 +1,5 @@
-use crate::matrix::Matrix;
-use crate::enums::MatrixError;
+use crate::matrices::matrix::Matrix;
+use crate::matrices::enums::MatrixError;
 
 impl Matrix<f32> {
     

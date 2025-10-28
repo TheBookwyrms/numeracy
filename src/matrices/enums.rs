@@ -1,4 +1,4 @@
-use crate::{matrix::Matrix};
+use crate::matrices::matrix::Matrix;
 
 #[derive(Debug)]
 /// enumerates possible errors originating due to Matrix implementations

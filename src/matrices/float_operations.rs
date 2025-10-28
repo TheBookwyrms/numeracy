@@ -2,9 +2,9 @@ use std::fmt::{Debug, Display};
 use std::iter::Sum;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
-use crate::matrix::Matrix;
-use crate::traits::{Float, Numerical, IntoDataType};
-use crate::enums::{MatrixError, DataTypes};
+use crate::matrices::matrix::Matrix;
+use crate::matrices::traits::{Float, Numerical, IntoDataType};
+use crate::matrices::enums::{MatrixError, DataTypes};
 
 
 impl<T:

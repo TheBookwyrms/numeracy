@@ -1,7 +1,7 @@
-use crate::matrix::Matrix;
-use crate::traits::{IntoDataType, Float};
-use crate::enums::DataTypes;
-use crate::enums::MatrixError;
+use crate::matrices::matrix::Matrix;
+use crate::matrices::traits::{IntoDataType, Float};
+use crate::matrices::enums::DataTypes;
+use crate::matrices::enums::MatrixError;
 
 impl<T:Clone + Float> Matrix<T> {
     /// returns an identity matrix of order N
