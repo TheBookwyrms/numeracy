@@ -1,5 +1,5 @@
 use numeracy::matrices::matrix::Matrix;
-use numeracy::matrices::enums::DataTypes;
+use numeracy::enums::MatrixDataTypes;
 
 #[test]
 fn gauss_jordan_inverse() {
@@ -234,8 +234,8 @@ fn column_zeroes() {
 #[test]
 fn dtype() {
     let mat = Matrix::<f32>::from_scalar(23.3);
-    assert_eq!(mat.dtype, DataTypes::F32);
-    assert_ne!(mat.dtype, DataTypes::F64);
+    assert_eq!(mat.dtype, MatrixDataTypes::F32);
+    assert_ne!(mat.dtype, MatrixDataTypes::F64);
 }
 
 #[test]

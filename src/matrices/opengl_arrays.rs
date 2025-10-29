@@ -1,5 +1,5 @@
 use crate::matrices::matrix::Matrix;
-use crate::matrices::enums::MatrixError;
+use crate::enums::MatrixError;
 
 impl Matrix<f32> {
     
@@ -26,7 +26,7 @@ impl Matrix<f32> {
     /// 3D rotation matrix based on x, y, and z rotation factors
     /// (rx, ry, rz) are in degrees
     /// rotation occurs around the (relative) origin for the points
-    pub fn rotate(rx:f32, ry:f32, rz:f32) -> Result<Matrix<f32>, MatrixError<f32>> {
+    pub fn rotate(rx:f32, ry:f32, rz:f32) -> Result<Matrix<f32>, MatrixError> {
         let (rrx, rry, rrz) = (rx.to_radians(), ry.to_radians(), rz.to_radians());
         
         let rot_x = Matrix::from_2darray([
@@ -61,7 +61,7 @@ impl Matrix<f32> {
     /// first translates the position to be at the origin,
     /// then rotates it accordingly,
     /// lastly translates back to the original position
-    pub fn rotate_around_p(p:(f32, f32, f32), r:(f32, f32, f32)) -> Result<Matrix<f32>, MatrixError<f32>> {
+    pub fn rotate_around_p(p:(f32, f32, f32), r:(f32, f32, f32)) -> Result<Matrix<f32>, MatrixError> {
 
         // p in form (x_offset, y_offset, z_offset)
         // NOTE : for some reason, y and z switch in calculations

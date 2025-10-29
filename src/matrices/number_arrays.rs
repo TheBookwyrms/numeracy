@@ -1,15 +1,16 @@
 use crate::matrices::matrix::Matrix;
-use crate::matrices::traits::{IntoDataType, Numerical};
-use crate::matrices::enums::MatrixError;
+use crate::traits::IntoDataType;
+use crate::traits::Numerical;
+use crate::enums::MatrixError;
 use std::fmt::Debug;
 use std::iter::Sum;
 use std::ops::{Add, Mul, MulAssign, Sub};
 
 impl<T:Clone+IntoDataType+Add<Output = T>> Add for Matrix<T> {
-    type Output = Result<Matrix<T>, MatrixError<T>>;
+    type Output = Result<Matrix<T>, MatrixError>;
 
     /// add two matrices together element-wise
-    fn add(self, other: Self) -> Result<Matrix<T>, MatrixError<T>> {
+    fn add(self, other: Self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != other.ndims() {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
         } else if self.dtype != other.dtype {
@@ -30,10 +31,10 @@ impl<T:Clone+IntoDataType+Add<Output = T>> Add for Matrix<T> {
 }
 
 impl<T:Clone+IntoDataType+Sub<Output = T>> Sub for Matrix<T> {
-    type Output = Result<Self, MatrixError<T>>;
+    type Output = Result<Self, MatrixError>;
 
     /// subtracts two matrices element-wise
-    fn sub(self, other: Self) -> Result<Self, MatrixError<T>> {
+    fn sub(self, other: Self) -> Result<Self, MatrixError> {
         if self.ndims() != other.ndims() {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
         } else if self.dtype != other.dtype {
@@ -56,7 +57,7 @@ impl<T:Clone+IntoDataType+Sub<Output = T>> Sub for Matrix<T> {
 impl<T:IntoDataType + Clone + Numerical + Mul<Output=T> + Sum + MulAssign + Debug> Matrix<T> {
     
     /// performs the dot product of two vectors (1D matrices) 
-    pub fn dot(&self, other:&Self) -> Result<T, MatrixError<T>> {
+    pub fn dot(&self, other:&Self) -> Result<T, MatrixError> {
         if (self.ndims() != 1) || (other.ndims() != 1) {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
         } else if self.array.len() != other.array.len() {
@@ -73,7 +74,7 @@ impl<T:IntoDataType + Clone + Numerical + Mul<Output=T> + Sum + MulAssign + Debu
     }
 
     /// performs the matrix multiplication of 2 2D matrices
-    pub fn matmul(&self, other:&Self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn matmul(&self, other:&Self) -> Result<Matrix<T>, MatrixError> {
         if (self.ndims() != 2) || (other.ndims() != 2) {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
         } else if !(self.shape[0]==other.shape[1]) {

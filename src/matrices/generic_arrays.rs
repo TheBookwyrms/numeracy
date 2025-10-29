@@ -1,7 +1,7 @@
 use crate::combinatorics::cartesian_product;
 use crate::matrices::matrix::Matrix;
-use crate::matrices::traits::IntoDataType;
-use crate::matrices::enums::MatrixError;
+use crate::traits::IntoDataType;
+use crate::enums::MatrixError;
 
 use std::ops::{Index, IndexMut, Range};
 use std::fmt::{Debug, Display};
@@ -187,7 +187,7 @@ impl<T:Clone> Matrix<T> {
     }
     
     /// index a matrix by Ranges, returning a submatrix composed of the included bounds
-    pub fn get_submatrix<const K:usize>(&self, bounds:[Range<usize>;K]) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn get_submatrix<const K:usize>(&self, bounds:[Range<usize>;K]) -> Result<Matrix<T>, MatrixError> {
         if bounds.len() != self.ndims() {
             Err(MatrixError::InvalidDimensions([bounds.len(), self.ndims()]))
         } else {
@@ -278,7 +278,7 @@ impl<T:Clone> Matrix<T> {
 
 
     /// transpose a 2-dimensional matrix
-    pub fn transpose(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn transpose(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() == 2 {
             Ok(self.swap_axes(0,1))
         } else {
@@ -287,7 +287,7 @@ impl<T:Clone> Matrix<T> {
     }
 
     /// get row i of a matrix
-    pub fn get_row(&self, idx:usize) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn get_row(&self, idx:usize) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() == 2 {
             match idx<self.shape[1] {
                 true => {
@@ -302,7 +302,7 @@ impl<T:Clone> Matrix<T> {
     }
 
     /// get column j of a matrix
-    pub fn get_col(&self, idx:usize)  -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn get_col(&self, idx:usize)  -> Result<Matrix<T>, MatrixError> {
         if self.ndims() == 2 {
             let tarr = self.transpose()?;
             tarr.get_row(idx)
@@ -325,7 +325,7 @@ impl<T:Clone> Matrix<T> {
     }
 
     /// returns the matrix without the specified row and column
-    pub fn without_rc(&self, row_i:usize, col_j:usize) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn without_rc(&self, row_i:usize, col_j:usize) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if !(row_i<self.shape[1] && col_j<self.shape[0]) {
@@ -350,7 +350,7 @@ impl<T:Clone> Matrix<T> {
     }
 
     /// returns the matrix without the specified column
-    pub fn without_col(&self, col_j:usize) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn without_col(&self, col_j:usize) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if !(col_j<self.shape[0]) {
@@ -374,7 +374,7 @@ impl<T:Clone> Matrix<T> {
     }
 
     /// expands a matrix along a specific axis
-    pub fn expand_along_axis(&self, other:Matrix<T>, axis:usize) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn expand_along_axis(&self, other:Matrix<T>, axis:usize) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != other.ndims() {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
         } else if self.dtype != other.dtype {

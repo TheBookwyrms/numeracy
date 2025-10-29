@@ -3,8 +3,8 @@ use std::iter::Sum;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 use crate::matrices::matrix::Matrix;
-use crate::matrices::traits::{Float, Numerical, IntoDataType};
-use crate::matrices::enums::{MatrixError, DataTypes};
+use crate::traits::{Float, Numerical, IntoDataType};
+use crate::enums::{MatrixError, MatrixDataTypes};
 
 
 impl<T:
@@ -17,7 +17,7 @@ impl<T:
 
     
     /// gets the minor of a matrix for row i and column j
-    pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<T>> {
+    pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if self.shape[0] != self.shape[1] {
@@ -29,7 +29,7 @@ impl<T:
     }
 
     /// gets the cofactor of a matrix for row i and column j
-    pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<T>> {
+    pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if self.shape[0] != self.shape[1] {
@@ -47,7 +47,7 @@ impl<T:
     }
 
     /// get the determinant of a matrix via laplace expansion
-    pub fn laplace_expansion(&self) -> Result<T, MatrixError<T>> {
+    pub fn laplace_expansion(&self) -> Result<T, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if self.shape[0] != self.shape[1] {
@@ -71,7 +71,7 @@ impl<T:
     }
 
     /// get the matrix of cofactors of the original matrix
-    pub fn cofactor_matrix(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn cofactor_matrix(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         }  else if self.shape[0] != self.shape[1] {
@@ -84,12 +84,12 @@ impl<T:
             }
 
             // transposed because of swapped linear algebra indexing conventions
-            Matrix {shape:self.shape.clone(), array:cofactor_matrix, dtype:DataTypes::F32}.transpose()
+            Matrix {shape:self.shape.clone(), array:cofactor_matrix, dtype:MatrixDataTypes::F32}.transpose()
         }
     }
 
     /// get the inverse of a matrix
-    pub fn inverse(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn inverse(&self) -> Result<Matrix<T>, MatrixError> {
 
         let inverse = self.gauss_jordan_inverse();
         inverse
@@ -105,10 +105,10 @@ impl<T:
     }
 
     /// determines if the column j of a matrix is null (zero)
-    pub fn col_is_null(&self, col_j:usize) -> Result<bool, MatrixError<T>> {
+    pub fn col_is_null(&self, col_j:usize) -> Result<bool, MatrixError> {
         if self.ndims() == 2 {
             let column = self.get_col(col_j)?;
-            let zeroes = (0..column.array.len()).map(|i| column.array[i].is_zero()).all(|b| b==true);
+            let zeroes = (0..column.array.len()).map(|i| column.array[i]==T::zero()).all(|b| b==true);
             Ok(zeroes)
         } else {
             Err(MatrixError::InvalidDimension(self.ndims()))
@@ -118,7 +118,7 @@ impl<T:
 
     /// get the echelon form of a matrix
     /// via Gaussian elimination algorithm
-    pub fn echelon(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn echelon(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else {
@@ -166,7 +166,7 @@ impl<T:
 
     /// get the reduced echelon form of a matrix
     /// via Gauss-Jordan elimination algorithm
-    pub fn reduced_echelon(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn reduced_echelon(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else {
@@ -188,7 +188,7 @@ impl<T:
     /// solve a system of linear equations
     /// formatted as an augmented matrix
     /// via Gauss-Jordan elimination
-    pub fn solve(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn solve(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if self.shape[0] != self.shape[1]+1 {
@@ -217,7 +217,7 @@ impl<T:
 
     /// get the inverse of a matrix using gauss-jordan elimination
     /// on the matrix augmented by the identity
-    pub fn gauss_jordan_inverse(&self) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn gauss_jordan_inverse(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else if self.shape[0] != self.shape[1] {
@@ -241,7 +241,7 @@ impl<T:
             if dtype_eq && arr_eq {
                 Ok(reduced_matrix_right)
             } else {
-                Err(MatrixError::MatrixNotInversible(augmented_matrix))
+                Err(MatrixError::MatrixNotInversible)
             }
         }
     }

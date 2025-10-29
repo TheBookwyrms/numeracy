@@ -1,7 +1,7 @@
 use crate::matrices::matrix::Matrix;
-use crate::matrices::traits::{IntoDataType, Float};
-use crate::matrices::enums::DataTypes;
-use crate::matrices::enums::MatrixError;
+use crate::traits::{IntoDataType, Float};
+use crate::enums::MatrixDataTypes;
+use crate::enums::MatrixError;
 
 impl<T:Clone + Float> Matrix<T> {
     /// returns an identity matrix of order N
@@ -30,7 +30,7 @@ impl<T:IntoDataType + Clone> Matrix<T> {
 
     /// creates an empty matrix of given shape
     pub fn new_empty(shape:Vec<usize>) -> Matrix<T> {
-        Matrix { shape, array: vec![], dtype:DataTypes::EMPTY }
+        Matrix { shape, array: vec![], dtype:MatrixDataTypes::EMPTY }
     }
 
     /// creates matrix from a scalar value
@@ -52,7 +52,7 @@ impl<T:IntoDataType + Clone> Matrix<T> {
     }
 
     /// creates a 2-dimensional matrix from a vec of vecs
-    pub fn from_vec_of_vec(vec:Vec<Vec<T>>) -> Result<Matrix<T>, MatrixError<T>> {
+    pub fn from_vec_of_vec(vec:Vec<Vec<T>>) -> Result<Matrix<T>, MatrixError> {
         let dtype = vec[0][0].as_dtype();
         let mut homogenous_rows = true;
         let mut row_lengths = vec![];

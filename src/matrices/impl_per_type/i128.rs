@@ -1,5 +1,5 @@
 use crate::matrices::matrix::Matrix;
-use crate::matrices::enums::DataTypes;
+use crate::enums::MatrixDataTypes;
 
 
 
@@ -15,6 +15,6 @@ impl PartialEq for Matrix<i128> {
 impl From<Matrix<i128>> for Matrix<f64>{
     fn from(mat:Matrix<i128>) -> Matrix<f64> {
         let narr = (0..mat.array.len()).map(|i| mat.array[i] as f64).collect::<Vec<_>>();
-        Matrix { shape:mat.shape, array:narr, dtype:DataTypes::F64 }
+        Matrix { shape:mat.shape, array:narr, dtype:MatrixDataTypes::F64 }
     }
 }

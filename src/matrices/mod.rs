@@ -1,8 +1,5 @@
 pub mod matrix;
 
-pub mod enums;
-pub mod traits;
-
 pub mod constructors;
 pub mod generic_arrays;
 
