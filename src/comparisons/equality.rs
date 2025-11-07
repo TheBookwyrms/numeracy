@@ -1,3 +1,6 @@
+use std::ops::{Add, Sub};
+use crate::traits::Float;
+
 pub fn unordered_equality<T:Clone+PartialEq>(v1:Vec<T>, v2:Vec<T>) -> bool {
     match v1.len() == v2.len() {
         false => false,
@@ -21,4 +24,15 @@ pub fn unordered_equality<T:Clone+PartialEq>(v1:Vec<T>, v2:Vec<T>) -> bool {
             }
         },
     }
+}
+
+pub fn float_equality<T: Float + Add<Output=T> + Sub<Output=T> + PartialOrd + Copy>(
+    f1:T, f2:T, epsilon_magnitude:isize) -> bool {
+    let epsilon = T::epsilon(epsilon_magnitude);
+
+    let above_lower_bound = f1-epsilon < f2;
+    let under_upper_bound = f1+epsilon > f2;
+    let float_equality = above_lower_bound && under_upper_bound;
+
+    float_equality
 }

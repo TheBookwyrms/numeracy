@@ -425,4 +425,21 @@ impl<T:Clone> Matrix<T> {
             }
         }
     }
+
+    pub fn flip_vertically(&self) -> Result<Matrix<T>, MatrixError> {
+        if self.ndims() != 2 {
+            Err(MatrixError::InvalidDimension(self.ndims()))
+        } else {
+            let mut narr = self.array.clone();
+
+            let height = self.shape[1];
+            let width = self.shape[0];
+
+            for i in 0..self.shape[1] {
+                narr[i*width..(i+1)*width].clone_from_slice(&&self.array[(height-i-1)*width..(height-i)*width]);
+            }
+
+            Ok(Matrix { shape: self.shape.clone(), array: narr, dtype: self.dtype })
+        }
+    }
 }

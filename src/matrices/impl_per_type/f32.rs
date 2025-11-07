@@ -1,6 +1,6 @@
 use crate::matrices::matrix::Matrix;
 use crate::enums::MatrixDataTypes;
-use crate::traits::Float;
+use crate::comparisons::float_equality;
 
 impl PartialEq for Matrix<f32> {
     fn eq(&self, other: &Self) -> bool {
@@ -9,7 +9,7 @@ impl PartialEq for Matrix<f32> {
         //let epsilon = 0.00001;
         let mut val_eq = vec![false;self.array.len()];
         for i in 0..self.array.len() {
-            val_eq[i] = self.array[i].float_equality(other.array[i], -5);
+            val_eq[i] = float_equality(self.array[i], other.array[i], -5);
 
             //let above_lower_bound = self.array[i]-epsilon < other.array[i];
             //let under_upper_bound = self.array[i]+epsilon > other.array[i];

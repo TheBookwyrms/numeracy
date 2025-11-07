@@ -1,11 +1,14 @@
-pub mod matrix;
+mod matrix;
 
-pub mod constructors;
-pub mod generic_arrays;
+mod constructors;
+mod generic_arrays;
 
-pub mod number_arrays;
+mod number_arrays;
 
-pub mod float_operations;
-pub mod opengl_arrays;
+mod float_operations;
+mod opengl_arrays;
 
-pub mod impl_per_type;
+mod impl_per_type;
+
+
+pub use matrix::Matrix;
