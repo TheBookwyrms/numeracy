@@ -1,4 +1,3 @@
-use std::ops::{Add, Sub};
 use crate::traits::Float;
 
 pub fn unordered_equality<T:Clone+PartialEq>(v1:Vec<T>, v2:Vec<T>) -> bool {
@@ -26,7 +25,7 @@ pub fn unordered_equality<T:Clone+PartialEq>(v1:Vec<T>, v2:Vec<T>) -> bool {
     }
 }
 
-pub fn float_equality<T: Float + Add<Output=T> + Sub<Output=T> + PartialOrd + Copy>(
+pub fn float_equality<T:Float>(
     f1:T, f2:T, epsilon_magnitude:isize) -> bool {
     let epsilon = T::epsilon(epsilon_magnitude);
 

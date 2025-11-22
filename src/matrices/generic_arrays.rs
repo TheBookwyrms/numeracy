@@ -140,7 +140,7 @@ impl<T:Display + Debug + PartialEq + IntoDataType + Clone> Display for Matrix<T>
 
 
 
-impl<T:Clone> Matrix<T> {
+impl<T> Matrix<T> {
 
     /// converts linear index into corresponding matrix indices
     pub fn indices_of(&self, linear_index:usize) -> Vec<usize> {
@@ -182,10 +182,45 @@ impl<T:Clone> Matrix<T> {
         self.shape.len()
     }
 
+    pub fn num_items(&self) -> usize {
+        self.array.len()
+    }
+
     pub fn as_ptr(&self) -> *const T {
         self.array.as_ptr()
     }
     
+
+    /// get the size in memory of one item of the matrix's type T
+    pub fn dtype_memsize(&self) -> usize {
+        let type_size = std::mem::size_of::<T>();
+        type_size
+    }
+
+    /// get the amount of memory used by the matrix as a whole
+    pub fn memory_size(&self) -> usize {
+        let type_size = std::mem::size_of::<T>();
+        let num_items = self.array.len();
+        num_items*type_size
+    }
+
+    pub fn is_vec3(&self) -> bool {
+        if self.array.len() == 3 {
+            true
+        } else {
+            false
+        }
+    }
+}
+
+
+
+
+
+
+
+
+impl<T:Clone> Matrix<T> {    
     /// index a matrix by Ranges, returning a submatrix composed of the included bounds
     pub fn get_submatrix<const K:usize>(&self, bounds:[Range<usize>;K]) -> Result<Matrix<T>, MatrixError> {
         if bounds.len() != self.ndims() {
@@ -199,45 +234,18 @@ impl<T:Clone> Matrix<T> {
             if not_bounded {
                 Err(MatrixError::InvalidBounds)
             } else {
-                let mut new_shape = bounds.clone().map(|range| range.len()).to_vec();
-                //let lowest_bound = bounds.clone().map(|range| range.min().unwrap()).to_vec();
-
-                //let mut new_mat = Matrix {
-                //    shape:new_shape.clone(),
-                //    array:vec![self.array[0].clone();new_shape.iter().product()],
-                //    dtype:self.dtype
-                //};
-
-                //let iters = bounds.map(|range| range.collect::<Vec<usize>>());
-                //let c = cartesian_product::cartesian_product(iters);
-                //for mut indices in c {
-                //    println!("start");
-                //    println!("i1, {:?}", indices);
-                //    //let indices = indices.iter_mut().map(|i| *i-1).collect::<Vec<usize>>();
-                //    //println!("i2, {:?}", indices);
-//
-                //    let first_idx = self.linear_index_of(new_mat.shape.clone());
-                //    let lb_idx = self.linear_index_of(lowest_bound.clone());
-                //    println!("first idx {}", first_idx);
-                //    println!("lowest bound {:?}, lb_idx {}", lowest_bound, lb_idx);
-//
-                //    let linear_index = self.linear_index_of(indices.clone());
-                //    let idx_val = self.array[linear_index].clone();
-//
-                //    let new_linear_idx = new_mat.linear_index_of(indices.clone());
-                //    println!("{:?}, {:?}, {}, {}", self.shape, new_mat.shape, linear_index, new_linear_idx);
-                //    new_mat.array[new_linear_idx-lb_idx] = idx_val;
-                //    println!("end");
-                //}
-//
-                //Ok(new_mat)
-                
-                new_shape.reverse();
+                let new_shape = bounds.clone()
+                                                  .map(|range| range.len())
+                                                  .to_vec()
+                                                  .into_iter()
+                                                  .rev()
+                                                  .collect::<Vec<usize>>();
  
                 let mut new_arr = vec![];
                 let iters = bounds.map(|range| range.collect::<Vec<usize>>());
                 let mut combinations = cartesian_product::cartesian_product(iters);
                 combinations.sort();
+
                 for indices in combinations {
                     let linear_index = self.linear_index_of(indices.clone());
                     let idx_val = self.array[linear_index].clone();
@@ -309,19 +317,6 @@ impl<T:Clone> Matrix<T> {
         } else {
             Err(MatrixError::InvalidDimension(self.ndims()))
         }
-    }
-
-    /// get the size in memory of one item of the matrix's type T
-    pub fn dtype_memsize(&self) -> usize {
-        let type_size = std::mem::size_of::<T>();
-        type_size
-    }
-
-    /// get the amount of memory used by the matrix as a whole
-    pub fn memory_size(&self) -> usize {
-        let type_size = std::mem::size_of::<T>();
-        let num_items = self.array.len();
-        num_items*type_size
     }
 
     /// returns the matrix without the specified row and column
@@ -441,5 +436,52 @@ impl<T:Clone> Matrix<T> {
 
             Ok(Matrix { shape: self.shape.clone(), array: narr, dtype: self.dtype })
         }
+    }
+
+    pub fn reshape(&self, shape:Vec<usize>) -> Result<Matrix<T>, MatrixError> {
+        let mut new_mat = self.clone();
+        if self.array.len() == shape.iter().product() {
+            new_mat.shape = shape;
+            Ok(new_mat)
+        } else {
+            Err(MatrixError::InvalidShapes([self.shape.clone(), shape]))
+        }
+    }
+
+    pub fn new_axis(&self) -> Matrix<T> {
+        let mut new_mat = self.clone();
+        new_mat.shape.push(1);
+        new_mat
+    }
+
+    pub fn remove_axis(&self, axis:usize) -> Result<Matrix<T>, MatrixError> {
+        let mut new_mat = self.clone();
+
+        let new_shape = self.shape
+                                        .clone()
+                                        .into_iter()
+                                        .enumerate()
+                                        .filter(|(idx, _val)| idx != &axis)
+                                        .map(|(_idx, val)| val)
+                                        .collect::<Vec<usize>>();
+        if self.array.len() == new_shape.iter().product() {
+            new_mat.shape = new_shape;
+            Ok(new_mat)
+        } else {
+            Err(MatrixError::InvalidShapes([self.shape.clone(), new_shape]))
+        }
+    }
+
+    pub fn squeeze_axes(&self) -> Matrix<T> {
+        let mut new_mat = self.clone();
+
+        let new_shape = self.shape
+                                        .clone()
+                                        .into_iter()
+                                        .filter(|val| val != &1)
+                                        .collect::<Vec<usize>>();
+        new_mat.shape = new_shape;
+
+        new_mat
     }
 }

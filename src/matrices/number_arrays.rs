@@ -1,12 +1,9 @@
 use crate::matrices::matrix::Matrix;
-use crate::traits::IntoDataType;
 use crate::traits::Numerical;
 use crate::enums::MatrixError;
-use std::fmt::Debug;
-use std::iter::Sum;
-use std::ops::{Add, Mul, MulAssign, Sub};
+use std::ops::{Add, Sub};
 
-impl<T:Clone+IntoDataType+Add<Output = T>> Add for Matrix<T> {
+impl<T:Numerical> Add for Matrix<T> {
     type Output = Result<Matrix<T>, MatrixError>;
 
     /// add two matrices together element-wise
@@ -30,7 +27,7 @@ impl<T:Clone+IntoDataType+Add<Output = T>> Add for Matrix<T> {
     }
 }
 
-impl<T:Clone+IntoDataType+Sub<Output = T>> Sub for Matrix<T> {
+impl<T:Numerical> Sub for Matrix<T> {
     type Output = Result<Self, MatrixError>;
 
     /// subtracts two matrices element-wise
@@ -54,7 +51,7 @@ impl<T:Clone+IntoDataType+Sub<Output = T>> Sub for Matrix<T> {
     }
 }
 
-impl<T:IntoDataType + Clone + Numerical + Mul<Output=T> + Sum + MulAssign + Debug> Matrix<T> {
+impl<T:Numerical> Matrix<T> {
     
     /// performs the dot product of two vectors (1D matrices) 
     pub fn dot(&self, other:&Self) -> Result<T, MatrixError> {

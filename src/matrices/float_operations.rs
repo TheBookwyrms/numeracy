@@ -1,19 +1,9 @@
-use std::fmt::{Debug, Display};
-use std::iter::Sum;
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
-
 use crate::matrices::matrix::Matrix;
-use crate::traits::{Float, Numerical, IntoDataType};
+use crate::traits::Float;
 use crate::enums::{MatrixError, MatrixDataTypes};
 
 
-impl<T:
-    Float + Clone + IntoDataType + PartialEq + DivAssign
-    + SubAssign + MulAssign + AddAssign + Mul + Sub + Numerical + Add<Output = T>
-    + Mul<Output = T> + Sub<Output = T> + Sum + Neg<Output = T> + Div<Output = T>
-    + IntoDataType
-    + Display + Debug
-    > Matrix<T> {
+impl<T:Float> Matrix<T> {
 
     
     /// gets the minor of a matrix for row i and column j
@@ -243,6 +233,21 @@ impl<T:
             } else {
                 Err(MatrixError::MatrixNotInversible)
             }
+        }
+    }
+
+    pub fn cross_product(&self, other:&Matrix<T>) -> Result<Matrix<T>, MatrixError> {
+        if !self.is_vec3() || !other.is_vec3() {
+            Err(MatrixError::InvalidShapes([self.shape.clone(), other.shape.clone()]))
+        } else {
+            let (ax, ay, az) = (self[[0]], self[[1]], self[[2]]);
+            let (bx, by, bz) = (other[[0]], other[[1]], other[[2]]);
+
+            let i = ay*bz - az*by;
+            let j = az*bx - ax*bz;
+            let k = ax*by - ay*bx;
+
+            Ok(Matrix::from_1darray([i, j, k]))
         }
     }
 }

@@ -3,7 +3,7 @@ use crate::traits::{IntoDataType, Float};
 use crate::enums::MatrixDataTypes;
 use crate::enums::MatrixError;
 
-impl<T:Clone + Float> Matrix<T> {
+impl<T:Float> Matrix<T> {
     /// returns an identity matrix of order N
     pub fn identity(order:usize) -> Matrix<T> {
         let arr = vec![T::zero(); order*order];
@@ -35,25 +35,25 @@ impl<T:IntoDataType + Clone> Matrix<T> {
 
     /// creates matrix from a scalar value
     pub fn from_scalar(f:T) -> Matrix<T> {
-        let dtype = f.as_dtype();
+        let dtype = T::as_dtype();
         Matrix {shape:vec![1], array:vec![f], dtype:dtype}
     }
 
     /// creates a 1-dimensional matrix from an array
     pub fn from_1darray<const M:usize>(arr:[T;M]) -> Matrix<T> {
-        let dtype = arr[0].as_dtype();
+        let dtype = T::as_dtype();
         Matrix {shape:vec![arr.len()], array:arr.to_vec(), dtype}
     }
 
     /// creates a 1-dimensional matrix from a vec
     pub fn from_vec(vec:Vec<T>) -> Matrix<T> {
-        let dtype = vec[0].as_dtype();
+        let dtype = T::as_dtype();
         Matrix {shape:vec![vec.len()], array: vec, dtype}
     }
 
     /// creates a 2-dimensional matrix from a vec of vecs
     pub fn from_vec_of_vec(vec:Vec<Vec<T>>) -> Result<Matrix<T>, MatrixError> {
-        let dtype = vec[0][0].as_dtype();
+        let dtype = T::as_dtype();
         let mut homogenous_rows = true;
         let mut row_lengths = vec![];
         let mut data : Vec<T> = vec![];
@@ -72,7 +72,7 @@ impl<T:IntoDataType + Clone> Matrix<T> {
 
     /// creates a 2-dimensional matrix from an array of arrays
     pub fn from_2darray<const M:usize, const N:usize>(arr:[[T;M];N]) -> Matrix<T> {
-        let dtype = arr[0][0].as_dtype();
+        let dtype = T::as_dtype();
         let mut data = vec![];
         for row in arr {
             data.extend(row);
@@ -82,7 +82,7 @@ impl<T:IntoDataType + Clone> Matrix<T> {
 
     /// creates a 3-dimensional matrix from an array of arrays of arrays
     pub fn from_3darray<const M:usize, const N:usize, const O:usize>(arr:[[[T;M];N];O]) -> Matrix<T> {
-        let dtype = arr[0][0][0].as_dtype();
+        let dtype = T::as_dtype();
         let mut data = vec![];
         for ax1 in arr {
             for ax2 in ax1 {

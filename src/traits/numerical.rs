@@ -1,5 +1,16 @@
+use crate::traits::IntoDataType;
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
+use std::iter::Sum;
+
+
 /// numerical trait for numerical data types that are valid in matrix
-pub trait Numerical {}
+pub trait Numerical :
+        Clone + IntoDataType + Add<Output = Self>
+        + Add<Output = Self> + Sub<Output = Self>
+        + Mul<Output = Self> + Div<Output = Self>
+        + AddAssign + SubAssign + MulAssign + DivAssign
+        + Sum
+    {}
 impl Numerical for u8 {}
 impl Numerical for u16 {}
 impl Numerical for u32 {}
