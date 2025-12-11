@@ -17,10 +17,7 @@ impl<T:Numerical> Add for Matrix<T> {
         } else {
 
             let mut v = self.array.clone();
-            v.iter_mut()
-             .zip(self.array.into_iter())
-             .zip(other.array)
-             .for_each(|((a1, a2), a3)| *a1=a2+a3);
+            v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other.array[idx]);
             
             Ok(Matrix {shape:self.shape, array:v, dtype:self.dtype})
         }
@@ -41,10 +38,7 @@ impl<T:Numerical> Sub for Matrix<T> {
         } else {
 
             let mut v = self.array.clone();
-            v.iter_mut()
-             .zip(self.array.into_iter())
-             .zip(other.array)
-             .for_each(|((a1, a2), a3)| *a1=a2-a3);
+            v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-other.array[idx]);
 
             Ok(Matrix {shape:self.shape, array:v, dtype:self.dtype})
         }
@@ -55,19 +49,11 @@ impl<T:Numerical> Matrix<T> {
     
     /// performs the dot product of two vectors (1D matrices) 
     pub fn dot(&self, other:&Self) -> Result<T, MatrixError> {
-        if (self.ndims() != 1) || (other.ndims() != 1) {
-            Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
-        } else if self.array.len() != other.array.len() {
-            Err(MatrixError::Invalidlengths([self.array.len(), other.array.len()]))
-        } else {
-            let mut sums = self.array.clone();
-            sums.iter_mut()
-             .zip(self.array.clone())
-             .zip(other.array.clone())
-             .for_each(|((a1, a2), a3)| *a1=a2*a3);
+        let v1 = self.as_vector()?;
+        let v2 = other.as_vector()?;
 
-            Ok(sums.into_iter().sum())
-        }
+        let dot = v1.dot(&v2)?;
+        Ok(dot)
     }
 
     /// performs the matrix multiplication of 2 2D matrices

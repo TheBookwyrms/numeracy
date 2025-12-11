@@ -18,5 +18,6 @@ pub enum MatrixError {
     MatrixSolveError((bool, bool)),
     InvalidBounds,
     ExpansionAxisOrDimensionsNotImplemented((usize, usize)),
-    MatrixNotInversible
+    MatrixNotInversible,
+    InvalidItemNumbers(Vec<usize>)
 }

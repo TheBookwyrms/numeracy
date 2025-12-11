@@ -237,17 +237,10 @@ impl<T:Float> Matrix<T> {
     }
 
     pub fn cross_product(&self, other:&Matrix<T>) -> Result<Matrix<T>, MatrixError> {
-        if !self.is_vec3() || !other.is_vec3() {
-            Err(MatrixError::InvalidShapes([self.shape.clone(), other.shape.clone()]))
-        } else {
-            let (ax, ay, az) = (self[[0]], self[[1]], self[[2]]);
-            let (bx, by, bz) = (other[[0]], other[[1]], other[[2]]);
+        let v1 = self.as_vector()?;
+        let v2 = other.as_vector()?;
 
-            let i = ay*bz - az*by;
-            let j = az*bx - ax*bz;
-            let k = ax*by - ay*bx;
-
-            Ok(Matrix::from_1darray([i, j, k]))
-        }
+        let mat = Matrix::from_vector(v1.cross_product(&v2)?);
+        Ok(mat)
     }
 }

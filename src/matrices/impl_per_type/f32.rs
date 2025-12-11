@@ -1,6 +1,6 @@
 use crate::matrices::matrix::Matrix;
 use crate::enums::MatrixDataTypes;
-use crate::comparisons::float_equality;
+use crate::general_math::equality::float_equality;
 
 impl PartialEq for Matrix<f32> {
     fn eq(&self, other: &Self) -> bool {

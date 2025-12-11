@@ -1,7 +1,8 @@
-use crate::combinatorics::cartesian_product;
+use crate::general_math::cartesian_product;
 use crate::matrices::matrix::Matrix;
 use crate::traits::IntoDataType;
 use crate::enums::MatrixError;
+use crate::vectors::vector::Vector;
 
 use std::ops::{Index, IndexMut, Range};
 use std::fmt::{Debug, Display};
@@ -483,5 +484,13 @@ impl<T:Clone> Matrix<T> {
         new_mat.shape = new_shape;
 
         new_mat
+    }
+
+    pub fn as_vector(&self) -> Result<Vector<T>, MatrixError> {
+        if self.squeeze_axes().ndims() != 1 {
+            Err(MatrixError::InvalidShape(self.shape.clone()))
+        } else {
+            Ok(Vector {array:self.array.clone(), dtype:self.dtype})
+        }
     }
 }

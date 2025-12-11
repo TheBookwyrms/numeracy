@@ -1,5 +1,5 @@
-use numeracy::combinatorics::cartesian_product;
-use numeracy::comparisons::unordered_equality;
+use numeracy::general_math::cartesian_product;
+use numeracy::general_math::equality::unordered_equality;
 
 
 #[test]

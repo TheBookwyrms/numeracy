@@ -1,7 +1,10 @@
+use std::vec;
+
 use crate::matrices::matrix::Matrix;
 use crate::traits::{IntoDataType, Float};
 use crate::enums::MatrixDataTypes;
 use crate::enums::MatrixError;
+use crate::vectors::vector::Vector;
 
 impl<T:Float> Matrix<T> {
     /// returns an identity matrix of order N
@@ -43,6 +46,10 @@ impl<T:IntoDataType + Clone> Matrix<T> {
     pub fn from_1darray<const M:usize>(arr:[T;M]) -> Matrix<T> {
         let dtype = T::as_dtype();
         Matrix {shape:vec![arr.len()], array:arr.to_vec(), dtype}
+    }
+
+    pub fn from_vector(vector:Vector<T>) -> Matrix<T> {
+        Matrix { shape: vec![vector.num_items()], array: vector.array, dtype: vector.dtype }
     }
 
     /// creates a 1-dimensional matrix from a vec

@@ -1,11 +1,15 @@
 use crate::traits::IntoDataType;
+use std::fmt::{Debug, Display};
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Sub, SubAssign};
 use std::iter::Sum;
 
 
 /// numerical trait for numerical data types that are valid in matrix
 pub trait Numerical :
-        Clone + IntoDataType + Add<Output = Self>
+        Copy + Clone
+        + Display + Debug
+        + IntoDataType
+        + PartialEq + PartialOrd
         + Add<Output = Self> + Sub<Output = Self>
         + Mul<Output = Self> + Div<Output = Self>
         + AddAssign + SubAssign + MulAssign + DivAssign
