@@ -1,82 +1,9 @@
 use crate::matrices::matrix::Matrix;
 use crate::traits::Float;
-use crate::enums::{MatrixError, MatrixDataTypes};
+use crate::enums::MatrixError;
 
 
 impl<T:Float> Matrix<T> {
-
-    
-    /// gets the minor of a matrix for row i and column j
-    pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError> {
-        if self.ndims() != 2 {
-            Err(MatrixError::InvalidDimension(self.ndims()))
-        } else if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape.clone()))
-        } else {
-            let minor = self.without_rc(row_i, col_j)?.laplace_expansion();
-            minor
-        }
-    }
-
-    /// gets the cofactor of a matrix for row i and column j
-    pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError> {
-        if self.ndims() != 2 {
-            Err(MatrixError::InvalidDimension(self.ndims()))
-        } else if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape.clone()))
-        } else {
-            let minor = self.without_rc(row_i, col_j)?.laplace_expansion()?;
-
-            let r = T::usize_to_t(row_i);
-            let c = T::usize_to_t(col_j);
-
-            let n1 = -T::one();
-            let cofactor = T::powf(n1, (r+T::one())+(c+T::one())) * minor;
-            Ok(cofactor)
-        }
-    }
-
-    /// get the determinant of a matrix via laplace expansion
-    pub fn laplace_expansion(&self) -> Result<T, MatrixError> {
-        if self.ndims() != 2 {
-            Err(MatrixError::InvalidDimension(self.ndims()))
-        } else if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape.clone()))
-        } else if self.shape[0] == 2 {
-            let a = self[[0, 0]].clone();
-            let b = self[[0, 1]].clone();
-            let c = self[[1, 0]].clone();
-            let d = self[[1, 1]].clone();
-            Ok(a*d - b*c)
-        } else {
-            let row_i = 0;
-            let mut determinant_sum = T::zero();
-
-            for (col_j, col_val) in self.array[0..self.shape[0]].iter().enumerate() {
-                let cofactor = self.cofactor(row_i, col_j)?;
-                determinant_sum += col_val.clone() * cofactor;
-            }
-            Ok(determinant_sum)
-        }
-    }
-
-    /// get the matrix of cofactors of the original matrix
-    pub fn cofactor_matrix(&self) -> Result<Matrix<T>, MatrixError> {
-        if self.ndims() != 2 {
-            Err(MatrixError::InvalidDimension(self.ndims()))
-        }  else if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape.clone()))
-        } else {
-            let mut cofactor_matrix = self.array.clone();
-            for i in 0..cofactor_matrix.len() {
-                let indices = self.indices_of(i);
-                cofactor_matrix[i] = self.cofactor(indices[0], indices[1])?;
-            }
-
-            // transposed because of swapped linear algebra indexing conventions
-            Matrix {shape:self.shape.clone(), array:cofactor_matrix, dtype:MatrixDataTypes::F32}.transpose()
-        }
-    }
 
     /// get the inverse of a matrix
     pub fn inverse(&self) -> Result<Matrix<T>, MatrixError> {
@@ -92,17 +19,6 @@ impl<T:Float> Matrix<T> {
         //} else {
         //    Ok(self.cofactor_matrix()?.transpose()?.multiply_by_constant(T::one()/determinant))
         //}
-    }
-
-    /// determines if the column j of a matrix is null (zero)
-    pub fn col_is_null(&self, col_j:usize) -> Result<bool, MatrixError> {
-        if self.ndims() == 2 {
-            let column = self.get_col(col_j)?;
-            let zeroes = (0..column.array.len()).map(|i| column.array[i]==T::zero()).all(|b| b==true);
-            Ok(zeroes)
-        } else {
-            Err(MatrixError::InvalidDimension(self.ndims()))
-        }
     }
 
 
@@ -234,13 +150,5 @@ impl<T:Float> Matrix<T> {
                 Err(MatrixError::MatrixNotInversible)
             }
         }
-    }
-
-    pub fn cross_product(&self, other:&Matrix<T>) -> Result<Matrix<T>, MatrixError> {
-        let v1 = self.as_vector()?;
-        let v2 = other.as_vector()?;
-
-        let mat = Matrix::from_vector(v1.cross_product(&v2)?);
-        Ok(mat)
     }
 }

@@ -14,20 +14,67 @@ pub trait Numerical :
         + Mul<Output = Self> + Div<Output = Self>
         + AddAssign + SubAssign + MulAssign + DivAssign
         + Sum
-    {}
-impl Numerical for u8 {}
-impl Numerical for u16 {}
-impl Numerical for u32 {}
-impl Numerical for usize {}
-impl Numerical for u64 {}
-impl Numerical for u128 {}
+    { 
+        fn zero() -> Self;
+        fn one() -> Self;
+    }
 
-impl Numerical for i8 {}
-impl Numerical for i16 {}
-impl Numerical for i32 {}
-impl Numerical for isize {}
-impl Numerical for i64 {}
-impl Numerical for i128 {}
+ 
+impl Numerical for u8 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for u16 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for u32 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for usize {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for u64 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for u128 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
 
-impl Numerical for f32 {}
-impl Numerical for f64 {}
+impl Numerical for i8 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for i16 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for i32 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for isize {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for i64 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+impl Numerical for i128 {
+    fn zero() -> Self {0}
+    fn one() -> Self {1}
+}
+
+impl Numerical for f32 {
+    fn zero() -> Self {0.0}
+    fn one() -> Self {1.0}
+}
+impl Numerical for f64 {
+    fn zero() -> Self {0.0}
+    fn one() -> Self {1.0}
+}

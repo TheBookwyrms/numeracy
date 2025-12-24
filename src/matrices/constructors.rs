@@ -1,35 +1,12 @@
 use std::vec;
 
 use crate::matrices::matrix::Matrix;
-use crate::traits::{IntoDataType, Float};
+use crate::traits::Numerical;
 use crate::enums::MatrixDataTypes;
 use crate::enums::MatrixError;
 use crate::vectors::vector::Vector;
 
-impl<T:Float> Matrix<T> {
-    /// returns an identity matrix of order N
-    pub fn identity(order:usize) -> Matrix<T> {
-        let arr = vec![T::zero(); order*order];
-        let mut identity_mat = Matrix {shape:vec![order, order], array:arr, dtype:T::as_dtype()};
-        for i in 0..order {
-            identity_mat[[i, i]] = T::one();
-        }
-        identity_mat
-    }
-
-    /// returns a null matrix of shape [usize; k]
-    pub fn null<const K:usize>(shape:[usize; K]) -> Matrix<T> {
-        let arr = vec![T::zero(); shape.iter().product()];
-        Matrix { shape: shape.to_vec(), array: arr, dtype: T::as_dtype() }
-    }
-    /// returns a null matrix of shape given by by Vec<usize>
-    pub fn null_from_vec(shape:Vec<usize>) -> Matrix<T> {
-        let arr = vec![T::zero(); shape.iter().product()];
-        Matrix { shape: shape.to_vec(), array: arr, dtype: T::as_dtype() }
-    }
-}
-
-impl<T:IntoDataType + Clone> Matrix<T> {
+impl<T:Numerical> Matrix<T> {
 
     /// creates an empty matrix of given shape
     pub fn new_empty(shape:Vec<usize>) -> Matrix<T> {
@@ -97,5 +74,26 @@ impl<T:IntoDataType + Clone> Matrix<T> {
             }
         }
         Matrix {shape:vec![M, N, O], array:data, dtype}
+    }
+
+    /// returns an identity matrix of order N
+    pub fn identity(order:usize) -> Matrix<T> {
+        let arr = vec![T::zero(); order*order];
+        let mut identity_mat = Matrix {shape:vec![order, order], array:arr, dtype:T::as_dtype()};
+        for i in 0..order {
+            identity_mat[[i, i]] = T::one();
+        }
+        identity_mat
+    }
+
+    /// returns a null matrix of shape [usize; k]
+    pub fn null<const K:usize>(shape:[usize; K]) -> Matrix<T> {
+        let arr = vec![T::zero(); shape.iter().product()];
+        Matrix { shape: shape.to_vec(), array: arr, dtype: T::as_dtype() }
+    }
+    /// returns a null matrix of shape given by by Vec<usize>
+    pub fn null_from_vec(shape:Vec<usize>) -> Matrix<T> {
+        let arr = vec![T::zero(); shape.iter().product()];
+        Matrix { shape: shape.to_vec(), array: arr, dtype: T::as_dtype() }
     }
 }
