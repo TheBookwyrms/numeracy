@@ -4,7 +4,7 @@ use crate::matrices::matrix::Matrix;
 use crate::traits::Numerical;
 use crate::enums::MatrixDataTypes;
 use crate::enums::MatrixError;
-use crate::vectors::vector::Vector;
+use crate::vectors::Vector;
 
 impl<T:Numerical> Matrix<T> {
 

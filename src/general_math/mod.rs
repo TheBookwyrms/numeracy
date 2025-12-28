@@ -1,3 +1,3 @@
 pub mod factorial;
-pub mod equality;
+pub mod comparisons;
 pub mod cartesian_product;

@@ -1,4 +1,4 @@
-use crate::traits::Float;
+use crate::traits::{Float, Numerical};
 
 pub fn unordered_equality<T:Clone+PartialEq>(v1:Vec<T>, v2:Vec<T>) -> bool {
     match v1.len() == v2.len() {
@@ -34,4 +34,24 @@ pub fn float_equality<T:Float>(
     let float_equality = above_lower_bound && under_upper_bound;
 
     float_equality
+}
+
+pub fn max<T:Numerical>(v:Vec<T>) -> T {
+    let mut max = v[0];
+    for val in v {
+        if val > max {
+            max = val;
+        }
+    }
+    max
+}
+
+pub fn min<T:Numerical>(v:Vec<T>) -> T {
+    let mut min = v[0];
+    for val in v {
+        if val < min {
+            min = val;
+        }
+    }
+    min
 }

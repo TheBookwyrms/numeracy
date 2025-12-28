@@ -1,5 +1,7 @@
+use crate::enums::MatrixError;
 use crate::vectors::vector::Vector;
 use crate::traits::IntoDataType;
+use crate::general_math::comparisons::{self, max};
 
 use std::ops::{Index, IndexMut};
 use std::fmt::{Debug, Display};
@@ -47,5 +49,18 @@ impl<T> Vector<T> {
         let type_size = std::mem::size_of::<T>();
         let num_items = self.array.len();
         num_items*type_size
+    }
+}
+
+impl<T:Clone> Vector<T> {
+    pub fn swap_items(&self, idx1:usize, idx2:usize) -> Result<Vector<T>, MatrixError> {
+        if max(vec![idx1, idx2]) >= self.num_items() {
+            Err(MatrixError::InvalidIndex(max(vec![idx1, idx2])))
+        } else {
+            let mut new_arr = self.array.clone();
+            new_arr[idx1] = self.array[idx2].clone();
+            new_arr[idx2] = self.array[idx1].clone();
+            Ok(Vector {array:new_arr, dtype:self.dtype})
+        }
     }
 }

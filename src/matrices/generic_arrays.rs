@@ -2,7 +2,7 @@ use crate::general_math::cartesian_product;
 use crate::matrices::matrix::Matrix;
 use crate::traits::IntoDataType;
 use crate::enums::MatrixError;
-use crate::vectors::vector::Vector;
+use crate::vectors::Vector;
 
 use std::ops::{Index, IndexMut, Range};
 use std::fmt::{Debug, Display};

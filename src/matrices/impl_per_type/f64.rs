@@ -1,5 +1,5 @@
 use crate::matrices::matrix::Matrix;
-use crate::general_math::equality::float_equality;
+use crate::general_math::comparisons::float_equality;
 
 
 impl PartialEq for Matrix<f64> {

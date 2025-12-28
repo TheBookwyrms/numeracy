@@ -70,7 +70,7 @@ impl<T:Numerical + Neg<Output = T>> Matrix<T> {
                 let mut this_row = vec![];
                 let row = self.get_row(r)?;
 
-                for c in 0..other.shape[1] {
+                for c in 0..other.shape[0] {
                     let col = &other.clone().get_col(c)?;
                     this_row.push(row.dot(&col)?);
                 }

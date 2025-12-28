@@ -1,7 +1,7 @@
 use crate::{traits::Float, vectors::vector::Vector};
 use crate::traits::Numerical;
 use crate::enums::MatrixError;
-use std::ops::{Add, Sub};
+use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 impl<T:Numerical> Add for Vector<T> {
     type Output = Result<Vector<T>, MatrixError>;
@@ -38,6 +38,18 @@ impl<T:Numerical> Sub for Vector<T> {
 
             Ok(Vector {array:v, dtype:self.dtype})
         }
+    }
+}
+
+impl<T:Numerical> AddAssign for Vector<T> {
+    fn add_assign(&mut self, rhs: Self) {
+        self.array.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+rhs.array[idx]);
+    }
+}
+///i wonder when you will find this. 23:28 dec 27 2025
+impl<T:Numerical> SubAssign for Vector<T> {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.array.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-rhs.array[idx]);
     }
 }
 
@@ -93,5 +105,9 @@ impl<T:Float> Vector<T> {
 
     pub fn project_onto(&self, other:&Vector<T>) -> Result<Vector<T>, MatrixError> {
         Ok(other.multiply_by_constant(self.dot(&other)?/self.dot(&self)?))
+    }
+
+    pub fn normalise(&self) -> Result<Vector<T>, MatrixError> {
+        Ok(self.clone().multiply_by_constant(T::one()/self.magnitude()?))
     }
 }

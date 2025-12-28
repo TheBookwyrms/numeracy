@@ -1,4 +1,4 @@
-use numeracy::vectors::vector::Vector;
+use numeracy::vectors::Vector;
 
 #[test]
 fn dot1() {
