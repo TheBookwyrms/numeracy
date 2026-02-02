@@ -38,10 +38,10 @@ impl Matrix<f32> {
             ]);
 
         let rot_y = Matrix::from_2darray([
-            [    rry.cos(), 0., -1.*rry.sin(), 0.],
-            [           0., 1.,            0., 0.],
-            [-1.*rry.sin(), 0.,     rry.cos(), 0.],
-            [           0., 0.,            0., 1.]
+            [    rry.cos(), 0., rry.sin(), 0.],
+            [           0., 1.,        0., 0.],
+            [-1.*rry.sin(), 0., rry.cos(), 0.],
+            [           0., 0.,        0., 1.]
             ]);
 
         let rot_z = Matrix::from_2darray([
@@ -53,6 +53,7 @@ impl Matrix<f32> {
 
         
         Ok(rot_z.matmul(&rot_y.matmul(&rot_x)?)?)
+        //Ok(rot_x.matmul(&rot_y.matmul(&rot_z)?)?)
     }
 
     /// creates rotation matrix around an arbitrary point
@@ -85,16 +86,19 @@ impl Matrix<f32> {
     /// coordinate system and the opengl coordinate system
     pub fn opengl_to_right_handed() -> Matrix<f32> {
         Matrix::from_2darray([
-            [0.,1.,0.,0.],
+
             [1.,0.,0.,0.],
+            [0.,1.,0.,0.],
             [0.,0.,1.,0.],
             [0.,0.,0.,1.],
 
+
+
             // originally
-            // [1.,0.,0.,0.],
-            // [0.,0.,1.,0.],
-            // [0.,1.,0.,0.],
-            // [0.,0.,0.,1.],
+            //[1.,0.,0.,0.],
+            //[0.,0.,1.,0.],
+            //[0.,1.,0.,0.],
+            //[0.,0.,0.,1.],
         ])
     }
 }

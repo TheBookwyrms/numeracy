@@ -7,7 +7,7 @@ pub enum MatrixError {
     InvalidShapes([Vec<usize>; 2]),
     InvalidDimension(usize),
     InvalidDimensions([usize; 2]),
-    InhomogenousLength(Vec<usize>),
+    InhomogenousShape(),
     InvalidIndex(usize),
     InvalidIndices(Vec<usize>),
     DeterminantIsZero,

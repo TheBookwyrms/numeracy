@@ -1,5 +1,3 @@
-use std::vec;
-
 use crate::matrices::matrix::Matrix;
 use crate::traits::Numerical;
 use crate::enums::MatrixDataTypes;
@@ -38,42 +36,27 @@ impl<T:Numerical> Matrix<T> {
     /// creates a 2-dimensional matrix from a vec of vecs
     pub fn from_vec_of_vec(vec:Vec<Vec<T>>) -> Result<Matrix<T>, MatrixError> {
         let dtype = T::as_dtype();
-        let mut homogenous_rows = true;
-        let mut row_lengths = vec![];
-        let mut data : Vec<T> = vec![];
-        for row in vec.clone() {
-            row_lengths.push(row.len());
-            if row.len() != vec[0].len() {
-                homogenous_rows = false;
+        let row_len = vec[0].len();
+        let num_rows = vec.len();
+        let data = vec.concat();
+        for row in vec {
+            if row.len() != row_len {
+                Err(MatrixError::InhomogenousShape())?;
             }
-            data.extend(row);
         }
-        match homogenous_rows {
-            true => Ok( Matrix { shape:vec![vec[0].len(), vec.len()], array:data, dtype } ),
-            false => Err(MatrixError::InhomogenousLength(row_lengths)),
-        }
+        Ok( Matrix { shape:vec![row_len, num_rows], array:data, dtype } )
     }
 
     /// creates a 2-dimensional matrix from an array of arrays
     pub fn from_2darray<const M:usize, const N:usize>(arr:[[T;M];N]) -> Matrix<T> {
         let dtype = T::as_dtype();
-        let mut data = vec![];
-        for row in arr {
-            data.extend(row);
-        }
-        Matrix {shape:vec![M, N], array:data, dtype}
+        Matrix {shape:vec![M, N], array:arr.concat(), dtype}
     }
 
     /// creates a 3-dimensional matrix from an array of arrays of arrays
     pub fn from_3darray<const M:usize, const N:usize, const O:usize>(arr:[[[T;M];N];O]) -> Matrix<T> {
         let dtype = T::as_dtype();
-        let mut data = vec![];
-        for ax1 in arr {
-            for ax2 in ax1 {
-                data.extend(ax2);
-            }
-        }
-        Matrix {shape:vec![M, N, O], array:data, dtype}
+        Matrix {shape:vec![M, N, O], array:arr.concat().concat(), dtype}
     }
 
     /// returns an identity matrix of order N

@@ -149,7 +149,7 @@ impl<T> Matrix<T> {
         let mut indices = self.shape.clone();
 
         let mut curr_max :usize = self.shape.iter().product();
-        let mut curr_lin_idx = linear_index.clone();
+        let mut curr_lin_idx = linear_index;
 
         for (i, s_size) in self.shape.iter().enumerate().rev() {
             // IMPORTANT!!!
