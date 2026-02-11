@@ -1,6 +1,5 @@
 use crate::general_math::cartesian_product;
 use crate::matrices::matrix::Matrix;
-use crate::traits::IntoDataType;
 use crate::enums::MatrixError;
 use crate::vectors::Vector;
 
@@ -100,7 +99,7 @@ fn write_2d_matrix<T:Display + Debug + PartialEq>(f: &mut std::fmt::Formatter<'_
 
 
 
-impl<T:Display + Debug + PartialEq + IntoDataType + Clone> Display for Matrix<T> {
+impl<T:Display + Debug + PartialEq + Clone> Display for Matrix<T> {
     /// format implementation for matrix
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.shape.len() == 1 {
@@ -212,6 +211,26 @@ impl<T> Matrix<T> {
             false
         }
     }
+
+    pub fn squeeze_axes(self) -> Matrix<T> {
+        let new_shape = self.shape
+                                        .clone()
+                                        .into_iter()
+                                        .filter(|val| val != &1)
+                                        .collect::<Vec<usize>>();
+
+        Matrix { shape: new_shape, array: self.array }
+    }
+
+
+    pub fn to_vector(self) -> Result<Vector<T>, MatrixError> {
+        let mat = self.squeeze_axes();
+        if mat.ndims() == 1 {
+            Ok(Vector {array:mat.array})
+        } else {
+            Err(MatrixError::NotAVector)
+        }
+    }
 }
 
 
@@ -253,7 +272,7 @@ impl<T:Clone> Matrix<T> {
                     new_arr.push(idx_val);
                 }
 
-                Ok(Matrix { shape:new_shape, array:new_arr, dtype:self.dtype }.swap_axes(0, self.ndims()-1))
+                Ok(Matrix { shape:new_shape, array:new_arr }.swap_axes(0, self.ndims()-1))
             }
         }
     }
@@ -267,7 +286,7 @@ impl<T:Clone> Matrix<T> {
         altered_shape[axis1] = self.shape[axis2];
         altered_shape[axis2] = self.shape[axis1];
         
-        let mut swapped_mat = Matrix {shape:altered_shape, array:swapped_arr, dtype:self.dtype};
+        let mut swapped_mat = Matrix {shape:altered_shape, array:swapped_arr };
 
         for index in 0..self.array.len() {
 
@@ -302,7 +321,7 @@ impl<T:Clone> Matrix<T> {
                 true => {
                     let row_len = self.shape[0];
                     let v = self.array[(idx*row_len)..(idx+1)*row_len].to_vec();
-                    Ok(Matrix {shape:vec![v.len()], array:v, dtype:self.dtype})},
+                    Ok(Matrix { shape:vec![v.len()], array:v })},
                 false => Err(MatrixError::InvalidIndex(idx)),
             }
         } else {
@@ -341,7 +360,7 @@ impl<T:Clone> Matrix<T> {
                 }
             }
 
-            Ok(Matrix {shape:new_shape, array:v, dtype:self.dtype})
+            Ok(Matrix {shape:new_shape, array:v })
         }
     }
 
@@ -365,7 +384,7 @@ impl<T:Clone> Matrix<T> {
                 }
             }
 
-            Ok(Matrix {shape:new_shape, array:v, dtype:self.dtype})
+            Ok(Matrix {shape:new_shape, array:v })
         }
     }
 
@@ -373,8 +392,6 @@ impl<T:Clone> Matrix<T> {
     pub fn expand_along_axis(&self, other:Matrix<T>, axis:usize) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != other.ndims() {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
-        } else if self.dtype != other.dtype {
-            Err(MatrixError::InvalidDataTypes([self.dtype, other.dtype]))
         } else {
             let mut shape1 = self.shape.clone();
             let mut shape2 = other.shape.clone();
@@ -406,7 +423,7 @@ impl<T:Clone> Matrix<T> {
                         v.extend( self.array[(n*self_axes_size)..((n+1)*(self_axes_size))].to_vec());
                         v.extend(other.array[(n*other_axes_size)..((n+1)*(other_axes_size))].to_vec());
                     }
-                    Ok(Matrix {shape:new_shape, array:v, dtype:self.dtype})
+                    Ok(Matrix {shape:new_shape, array:v })
                 } else if axis==1 && self.ndims()==2 { // expand along rows (expand in y)
                     for n in 0..(num_terms_per_axis+num_terms_after_axis) {
                         v.extend( self.array[(n*self_axes_size)..((n+1)*(self_axes_size))].to_vec());
@@ -414,7 +431,7 @@ impl<T:Clone> Matrix<T> {
                     for n in 0..(num_terms_per_axis+num_terms_after_axis) {
                         v.extend(other.array[(n*other_axes_size)..((n+1)*(other_axes_size))].to_vec());
                     }
-                    Ok(Matrix {shape:new_shape, array:v, dtype:self.dtype})
+                    Ok(Matrix {shape:new_shape, array:v })
                 } else {
                     Err(MatrixError::ExpansionAxisOrDimensionsNotImplemented((axis, self.ndims())))
                 }
@@ -435,7 +452,7 @@ impl<T:Clone> Matrix<T> {
                 narr[i*width..(i+1)*width].clone_from_slice(&&self.array[(height-i-1)*width..(height-i)*width]);
             }
 
-            Ok(Matrix { shape: self.shape.clone(), array: narr, dtype: self.dtype })
+            Ok(Matrix { shape: self.shape.clone(), array: narr })
         }
     }
 
@@ -470,27 +487,6 @@ impl<T:Clone> Matrix<T> {
             Ok(new_mat)
         } else {
             Err(MatrixError::InvalidShapes([self.shape.clone(), new_shape]))
-        }
-    }
-
-    pub fn squeeze_axes(&self) -> Matrix<T> {
-        let mut new_mat = self.clone();
-
-        let new_shape = self.shape
-                                        .clone()
-                                        .into_iter()
-                                        .filter(|val| val != &1)
-                                        .collect::<Vec<usize>>();
-        new_mat.shape = new_shape;
-
-        new_mat
-    }
-
-    pub fn as_vector(&self) -> Result<Vector<T>, MatrixError> {
-        if self.squeeze_axes().ndims() != 1 {
-            Err(MatrixError::InvalidShape(self.shape.clone()))
-        } else {
-            Ok(Vector {array:self.array.clone(), dtype:self.dtype})
         }
     }
 }

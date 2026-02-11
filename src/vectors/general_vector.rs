@@ -1,6 +1,6 @@
 use crate::enums::MatrixError;
+use crate::matrices::Matrix;
 use crate::vectors::vector::Vector;
-use crate::traits::IntoDataType;
 use crate::general_math::comparisons::{self, max};
 
 use std::ops::{Index, IndexMut};
@@ -21,7 +21,7 @@ impl<T:Clone> IndexMut<usize> for Vector<T> {
     }
 }
 
-impl<T:Display + Debug + PartialEq + IntoDataType + Clone> Display for Vector<T> {
+impl<T:Display + Debug + PartialEq + Clone> Display for Vector<T> {
     /// format implementation for vector
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.array.as_slice())
@@ -50,6 +50,10 @@ impl<T> Vector<T> {
         let num_items = self.array.len();
         num_items*type_size
     }
+
+    pub fn to_matrix(self) -> Matrix<T> {
+        Matrix { shape: vec![self.num_items()], array: self.array }
+    }
 }
 
 impl<T:Clone> Vector<T> {
@@ -60,7 +64,7 @@ impl<T:Clone> Vector<T> {
             let mut new_arr = self.array.clone();
             new_arr[idx1] = self.array[idx2].clone();
             new_arr[idx2] = self.array[idx1].clone();
-            Ok(Vector {array:new_arr, dtype:self.dtype})
+            Ok(Vector {array:new_arr})
         }
     }
 }

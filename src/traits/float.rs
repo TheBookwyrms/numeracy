@@ -4,10 +4,21 @@ use crate::traits::Numerical;
 
 /// trait representing floats
 pub trait Float : Numerical + Neg<Output = Self> {
-        fn usize_to_t(u:usize) -> Self;
-        fn powf(base:Self, exponent:Self) -> Self;
-        fn sqrt(base:Self) -> Self;
-        fn epsilon(magnitude:isize) -> Self;
+
+    fn usize_to_t(u:usize) -> Self;
+
+    fn powf(base:Self, exponent:Self) -> Self;
+    
+    fn sqrt(base:Self) -> Self;
+
+    /// returns 10 to the power of magnitude
+    /// 
+    /// ex:
+    /// 
+    /// let e = T::epsilon(-3);
+    /// 
+    /// assert_eq!(e, 0.001)
+    fn epsilon(magnitude:isize) -> Self;
 }
 impl Float for f32 {
     fn usize_to_t(u:usize) -> Self {u as f32}

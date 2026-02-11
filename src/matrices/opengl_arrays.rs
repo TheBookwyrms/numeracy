@@ -24,33 +24,50 @@ impl Matrix<f32> {
         ])
     }
 
-    /// 3D rotation matrix based on x, y, and z rotation factors
-    /// (rx, ry, rz) are in degrees
-    /// rotation occurs around the (relative) origin for the points
-    pub fn rotate(r:Vector<f32>) -> Result<Matrix<f32>, MatrixError> {
-        let (rrx, rry, rrz) = (r[0].to_radians(), r[1].to_radians(), r[2].to_radians());
-        
+    /// rx in degrees
+    pub fn rotate_about_x_axis(rx:f32) -> Matrix<f32> {
+        let rrx = rx.to_radians();
         let rot_x = Matrix::from_2darray([
             [1.,        0.,            0., 0.],
             [0., rrx.cos(), -1.*rrx.sin(), 0.],
             [0., rrx.sin(),     rrx.cos(), 0.],
             [0.,        0.,            0., 1.]
             ]);
+        rot_x
+    }
 
+    /// ry in degrees
+    pub fn rotate_about_y_axis(ry:f32) -> Matrix<f32> {
+        let rry = ry.to_radians();
         let rot_y = Matrix::from_2darray([
             [    rry.cos(), 0., rry.sin(), 0.],
             [           0., 1.,        0., 0.],
             [-1.*rry.sin(), 0., rry.cos(), 0.],
             [           0., 0.,        0., 1.]
             ]);
+        rot_y
+    }
 
+    /// rz in degrees
+    pub fn rotate_about_z_axis(rz:f32) -> Matrix<f32> {
+        let rrz = rz.to_radians();
         let rot_z = Matrix::from_2darray([
             [rrz.cos(), -1.*rrz.sin(), 0., 0.],
             [rrz.sin(),     rrz.cos(), 0., 0.],
             [       0.,            0., 1., 0.],
             [       0.,            0., 0., 1.],
             ]);
+        rot_z
+    }
 
+    /// 3D rotation matrix based on x, y, and z rotation factors
+    /// (rx, ry, rz) are in degrees
+    /// rotation occurs around the (relative) origin for the points
+    pub fn rotate(r:Vector<f32>) -> Result<Matrix<f32>, MatrixError> {
+        let (rx, ry, rz) = (r[0], r[1], r[2]);
+        let rot_x = Matrix::rotate_about_x_axis(rx);
+        let rot_y = Matrix::rotate_about_y_axis(ry);
+        let rot_z = Matrix::rotate_about_z_axis(rz);
         
         Ok(rot_z.matmul(&rot_y.matmul(&rot_x)?)?)
         //Ok(rot_x.matmul(&rot_y.matmul(&rot_z)?)?)

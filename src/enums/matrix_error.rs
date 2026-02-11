@@ -1,5 +1,3 @@
-use crate::enums::MatrixDataTypes;
-
 #[derive(Debug)]
 /// enumerates possible errors originating due to Matrix implementations
 pub enum MatrixError {
@@ -12,12 +10,12 @@ pub enum MatrixError {
     InvalidIndices(Vec<usize>),
     DeterminantIsZero,
     Invalidlengths([usize; 2]),
-    InvalidDataTypes([MatrixDataTypes;2]),
     AugmentedMatrixShapeError,
     InvalidExpansionLength((Vec<usize>, usize)),
-    MatrixSolveError((bool, bool)),
+    MatrixSolveError,
     InvalidBounds,
     ExpansionAxisOrDimensionsNotImplemented((usize, usize)),
     MatrixNotInversible,
-    InvalidItemNumbers(Vec<usize>)
+    InvalidItemNumbers(Vec<usize>),
+    NotAVector,
 }

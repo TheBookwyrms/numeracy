@@ -1,45 +1,92 @@
 use crate::{traits::Float, vectors::vector::Vector};
 use crate::traits::Numerical;
 use crate::enums::MatrixError;
-use std::ops::{Add, AddAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Neg, Mul};
 
-impl<T:Numerical> Add for Vector<T> {
+impl<T:Numerical> Add<Vector<T>> for Vector<T> {
     type Output = Result<Vector<T>, MatrixError>;
 
     /// add two matrices together element-wise
     fn add(self, other: Self) -> Result<Vector<T>, MatrixError> {
         if self.num_items() != other.num_items() {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else if self.dtype != other.dtype {
-            Err(MatrixError::InvalidDataTypes([self.dtype, other.dtype]))
         } else {
 
             let mut v = self.array.clone();
             v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other[idx]);
             
-            Ok(Vector {array:v, dtype:self.dtype})
+            Ok(Vector {array:v})
         }
     }
 }
 
-impl<T:Numerical> Sub for Vector<T> {
+
+
+impl<T:Numerical> Add<T> for Vector<T> {
+    type Output = Vector<T>;
+    /// adds an element to all items of a matrix
+    fn add(self, other: T) -> Vector<T> {
+
+        let mut v = self.array.clone();
+        v.iter_mut().for_each(|val| *val = *val+other);
+        
+        Vector { array:v }
+    }
+}
+
+impl<T:Numerical> Sub<Vector<T>> for Vector<T> {
     type Output = Result<Self, MatrixError>;
 
     /// subtracts two matrices element-wise
     fn sub(self, other: Self) -> Result<Self, MatrixError> {
         if self.num_items() != other.num_items() {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else if self.dtype != other.dtype {
-            Err(MatrixError::InvalidDataTypes([self.dtype, other.dtype]))
         } else {
 
             let mut v = self.array.clone();
             v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-other[idx]);
 
-            Ok(Vector {array:v, dtype:self.dtype})
+            Ok(Vector {array:v})
         }
     }
 }
+
+
+impl<T:Numerical> Sub<T> for Vector<T> {
+    type Output = Vector<T>;
+    /// subtracts an element to all items of a matrix
+    fn sub(self, other: T) -> Vector<T> {
+
+        let mut v = self.array.clone();
+        v.iter_mut().for_each(|val| *val = *val-other);
+        
+        Vector { array:v }
+    }
+}
+
+impl<T:Numerical + Neg<Output = T>> Neg for Vector<T> {
+    type Output = Vector<T>;
+    /// returns the vector where every element is its negative self
+    fn neg(self) -> Vector<T> {
+
+        let mut v = self.array.clone();
+        v.iter_mut().for_each(|val| *val = -*val);
+        
+        Vector { array:v }
+    }
+}
+
+impl <T:Numerical> Mul<T> for Vector<T> {
+    type Output = Vector<T>;
+    /// returns the vector where every element is multiplied by the other
+    fn mul(self, rhs: T) -> Self::Output {
+        let mut v = self.array.clone();
+        v.iter_mut().for_each(|val| *val = rhs * *val);
+        
+        Vector { array:v }
+    }
+}
+
 
 impl<T:Numerical> AddAssign for Vector<T> {
     fn add_assign(&mut self, rhs: Self) {
@@ -59,8 +106,6 @@ impl<T:Numerical> Vector<T> {
     pub fn dot(&self, other:&Self) -> Result<T, MatrixError> {
         if self.num_items() != other.num_items() {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else if self.dtype != other.dtype {
-            Err(MatrixError::InvalidDataTypes([self.dtype, other.dtype]))
         } else {
 
             let mut sums = self.array.clone();
@@ -74,8 +119,6 @@ impl<T:Numerical> Vector<T> {
     pub fn cross_product(&self, other:&Vector<T>) -> Result<Vector<T>, MatrixError> {
         if !(self.num_items()==3) || !(other.num_items()==3) {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else if self.dtype != other.dtype {
-            Err(MatrixError::InvalidDataTypes([self.dtype, other.dtype]))
         } else {
 
             let (ax, ay, az) = (self[0], self[1], self[2]);
@@ -85,7 +128,7 @@ impl<T:Numerical> Vector<T> {
             let j = az*bx - ax*bz;
             let k = ax*by - ay*bx;
 
-            Ok(Vector { array: vec![i, j, k], dtype: self.dtype })
+            Ok(Vector { array: vec![i, j, k] })
         }
     }
 
@@ -93,7 +136,7 @@ impl<T:Numerical> Vector<T> {
     pub fn multiply_by_constant(&self, scalar:T) -> Vector<T> {
         let mut narr = self.array.clone();
         (0..self.array.len()).for_each(|i| narr[i] *= scalar.clone());
-        Vector {array:narr, dtype:self.dtype}
+        Vector {array:narr}
     }
 }
 

@@ -96,9 +96,9 @@ impl<T:Float> Matrix<T> {
     /// via Gauss-Jordan elimination
     pub fn solve(&self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
-            Err(MatrixError::InvalidDimension(self.ndims()))
+            Err(MatrixError::InvalidDimension(self.ndims()))?
         } else if self.shape[0] != self.shape[1]+1 {
-            Err(MatrixError::AugmentedMatrixShapeError)
+            Err(MatrixError::AugmentedMatrixShapeError)?
         } else {
             let reduced_echelon = self.reduced_echelon()?;
 
@@ -109,14 +109,13 @@ impl<T:Float> Matrix<T> {
             let null = Matrix::<T>::null_from_vec(re_minus_id.shape);
 
 
-            let dtype_eq = re_minus_id.dtype == null.dtype;
             let arr_eq = re_minus_id.array == null.array;
 
-            if dtype_eq && arr_eq {
+            if arr_eq {
                 let solution = reduced_echelon.get_col(self.shape[0]-1)?;
                 Ok(solution)
             } else {
-                Err(MatrixError::MatrixSolveError((dtype_eq, arr_eq)))
+                Err(MatrixError::MatrixSolveError)
             }
         }
     }
@@ -141,10 +140,9 @@ impl<T:Float> Matrix<T> {
             let re_minus_id = (reduced_matrix_left-identity.clone())?;
             let null = Matrix::<T>::null_from_vec(re_minus_id.shape);
 
-            let dtype_eq = re_minus_id.dtype == null.dtype;
             let arr_eq = re_minus_id.array == null.array;
             
-            if dtype_eq && arr_eq {
+            if arr_eq {
                 Ok(reduced_matrix_right)
             } else {
                 Err(MatrixError::MatrixNotInversible)

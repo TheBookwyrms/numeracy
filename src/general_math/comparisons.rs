@@ -25,8 +25,8 @@ pub fn unordered_equality<T:Clone+PartialEq>(v1:Vec<T>, v2:Vec<T>) -> bool {
     }
 }
 
-pub fn float_equality<T:Float>(
-    f1:T, f2:T, epsilon_magnitude:isize) -> bool {
+/// returns a boolean of whether two floats are within a distance epsilon of each other
+pub fn float_equality<T:Float>(f1:T, f2:T, epsilon_magnitude:isize) -> bool {
     let epsilon = T::epsilon(epsilon_magnitude);
 
     let above_lower_bound = f1-epsilon < f2;

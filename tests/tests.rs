@@ -1,5 +1,4 @@
 use numeracy::matrices::Matrix;
-use numeracy::enums::MatrixDataTypes;
 
 #[test]
 fn flip_vertically() {
@@ -260,16 +259,10 @@ fn column_zeroes() {
 }
 
 
-#[test]
-fn dtype() {
-    let mat = Matrix::<f32>::from_scalar(23.3);
-    assert_eq!(mat.dtype, MatrixDataTypes::F32);
-    assert_ne!(mat.dtype, MatrixDataTypes::F64);
-}
 
 #[test]
 fn indices_conversion() {
-    let mat = Matrix::<u8>::new_empty(vec![2, 3, 4]);
+    let mat = Matrix::<u8>::null([2, 3, 4]);
     assert_eq!(mat.linear_index_of(vec![0, 1, 2]), 14);
     assert_eq!(19, mat.linear_index_of(vec![1, 0, 3]));
 }

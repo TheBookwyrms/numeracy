@@ -20,7 +20,7 @@ impl<T:Float> Dataset<T> {
         }
         let mut new_shape = self.data.shape.clone();
         new_shape[0] = 1;
-        Matrix {shape:new_shape, array:new_arr, dtype:self.data.dtype}
+        Matrix {shape:new_shape, array:new_arr}
     }
 
     /*

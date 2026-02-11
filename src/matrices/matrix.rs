@@ -1,5 +1,3 @@
-use crate::enums::MatrixDataTypes;
-
 #[derive(Debug, Clone)]
 /// struct to hold matrices of (mostly) arbitrary type T
 pub struct Matrix<T> {
@@ -10,7 +8,4 @@ pub struct Matrix<T> {
 
     /// 1D container for the n-dimensional matrix
     pub array:Vec<T>,
-
-    /// datatype of the matrix
-    pub dtype:MatrixDataTypes,
 }

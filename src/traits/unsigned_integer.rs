@@ -2,7 +2,6 @@ use std::ops::{AddAssign, Mul, Range};
 use std::ops::{Add, MulAssign};
 use std::fmt::{Debug, Display};
 
-use crate::traits::IntoDataType;
 
 
 
@@ -14,7 +13,6 @@ pub trait Uint :
         + PartialEq + PartialOrd
         + Copy + Clone
         + Display + Debug
-        + IntoDataType
     {
     fn zero() -> Self;
     fn one() -> Self;
