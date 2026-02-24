@@ -1,3 +1,4 @@
+use crate::general_math::multiplications::sum_of_multiplications;
 use crate::{traits::Float, vectors::vector::Vector};
 use crate::traits::Numerical;
 use crate::enums::MatrixError;
@@ -107,20 +108,14 @@ impl<T:Numerical> Vector<T> {
         if self.num_items() != other.num_items() {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
         } else {
-
-            let mut sums = self.array.clone();
-
-            sums.iter_mut().enumerate().for_each(|(idx, val)| *val = *val*other[idx]);
-
-            Ok(sums.into_iter().sum())
+            Ok(sum_of_multiplications(&self.array, &other.array))
         }
     }
 
     pub fn cross_product(&self, other:&Vector<T>) -> Result<Vector<T>, MatrixError> {
-        if !(self.num_items()==3) || !(other.num_items()==3) {
+        if !self.is_vec3() || !other.is_vec3() {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
         } else {
-
             let (ax, ay, az) = (self[0], self[1], self[2]);
             let (bx, by, bz) = (other[0], other[1], other[2]);
 
@@ -135,22 +130,26 @@ impl<T:Numerical> Vector<T> {
     /// multiplies every element of an n-dimensional matrix by a scalar value
     pub fn multiply_by_constant(&self, scalar:T) -> Vector<T> {
         let mut narr = self.array.clone();
-        (0..self.array.len()).for_each(|i| narr[i] *= scalar.clone());
+        (0..narr.len()).for_each(|i| narr[i] *= scalar.clone());
         Vector {array:narr}
     }
 }
 
 
 impl<T:Float> Vector<T> {
-    pub fn magnitude(&self) -> Result<T, MatrixError> {
-        Ok(T::sqrt(self.dot(&self)?))
+    pub fn magnitude(&self) -> T {
+        T::sqrt(sum_of_multiplications(&self.array, &self.array))
     }
 
     pub fn project_onto(&self, other:&Vector<T>) -> Result<Vector<T>, MatrixError> {
-        Ok(other.multiply_by_constant(self.dot(&other)?/self.dot(&self)?))
+        Ok(other.clone().multiply_by_constant(self.dot(&other)?/self.dot(&self)?))
     }
 
     pub fn normalise(&self) -> Result<Vector<T>, MatrixError> {
-        Ok(self.clone().multiply_by_constant(T::one()/self.magnitude()?))
+        if self.array.iter().all(|a| *a==T::zero()) {
+            Err(MatrixError::NullVector)
+        } else {
+            Ok(self.clone().multiply_by_constant(T::one()/self.magnitude()))
+        }
     }
 }

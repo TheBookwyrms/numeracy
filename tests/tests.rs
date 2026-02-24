@@ -1,6 +1,53 @@
 use numeracy::matrices::Matrix;
 
 #[test]
+fn get_row() {
+    let mat = Matrix::from_2darray([
+        [00, 01, 02, 03, 04, 05, 06, 07, 08, 09],
+        [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        [40, 41, 42, 43, 44, 45, 46, 47, 48, 49],
+        [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+        [60, 61, 62, 63, 64, 65, 66, 67, 68, 69],
+        [70, 71, 72, 73, 74, 75, 76, 77, 78, 79],
+        [80, 81, 82, 83, 84, 85, 86, 87, 88, 89],
+    ]);
+
+    let row_0 = mat.get_row(0).unwrap();
+    let row_4 = mat.get_row(4).unwrap();
+    let row_8 = mat.get_row(8).unwrap();
+
+
+    assert_eq!(row_0, Matrix::from_1darray([00, 01, 02, 03, 04, 05, 06, 07, 08, 09]));
+    assert_eq!(row_4, Matrix::from_1darray([40, 41, 42, 43, 44, 45, 46, 47, 48, 49]));
+    assert_eq!(row_8, Matrix::from_1darray([80, 81, 82, 83, 84, 85, 86, 87, 88, 89]))
+}
+
+#[test]
+fn get_col() {
+    let mat = Matrix::from_2darray([
+        [00, 01, 02, 03, 04, 05, 06, 07, 08, 09],
+        [10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+        [20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+        [30, 31, 32, 33, 34, 35, 36, 37, 38, 39],
+        [40, 41, 42, 43, 44, 45, 46, 47, 48, 49],
+        [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+        [60, 61, 62, 63, 64, 65, 66, 67, 68, 69],
+        [70, 71, 72, 73, 74, 75, 76, 77, 78, 79],
+        [80, 81, 82, 83, 84, 85, 86, 87, 88, 89],
+    ]);
+
+    let col_0 = mat.get_col(0).unwrap();
+    let col_4 = mat.get_col(4).unwrap();
+    let col_8 = mat.get_col(8).unwrap();
+
+    assert_eq!(col_0, Matrix::from_1darray([00, 10, 20, 30, 40, 50, 60, 70, 80]));
+    assert_eq!(col_4, Matrix::from_1darray([04, 14, 24, 34, 44, 54, 64, 74, 84]));
+    assert_eq!(col_8, Matrix::from_1darray([08, 18, 28, 38, 48, 58, 68, 78, 88]))
+}
+
+#[test]
 fn flip_vertically() {
     let mat = Matrix::from_2darray([
         [00, 01, 02, 03, 04, 05, 06, 07, 08, 09],
@@ -61,7 +108,7 @@ fn expand_along_axis_test2() {
     ]);
 
     let extend_ax0 = m1.expand_along_axis(m2, 0).unwrap();
-    println!("{}", extend_ax0);
+    //println!("{}", extend_ax0);
 
     assert_eq!(extend_ax0, Matrix::from_2darray([
         [1, 2, 3, 10, 11, 12],
@@ -85,7 +132,7 @@ fn expand_along_axis_test1() {
 
     let extend_ax1 = m1.expand_along_axis(m2, 1).unwrap();
 
-    println!("{}", extend_ax1);
+    //println!("{}", extend_ax1);
 
     assert_eq!(extend_ax1, Matrix::from_2darray([
         [1, 2, 3],
@@ -132,7 +179,7 @@ fn range_indexing3d() {
     //0, 1, 2
     //2, 3
     //1, 2
-    println!("{}", indexed_mat);
+    //println!("{}", indexed_mat);
     assert_eq!(indexed_mat, Matrix::from_3darray([
         [
             [25, 26, 27],
@@ -170,7 +217,7 @@ fn range_indexing2d() {
         [72, 73, 74, 75],
     ]);
 
-    println!("{}", indexed_mat);
+    //println!("{}", indexed_mat);
 
     assert_eq!(indexed_mat, real);
 }
@@ -185,7 +232,7 @@ fn solve() {
 
     let reduced_echelon = augmented_mat.solve().unwrap();
 
-    println!("abc");
+    //println!("abc");
 
     let solution = Matrix::from_1darray([763.0/30.0, -16.5, 1.0/30.0,]);
 

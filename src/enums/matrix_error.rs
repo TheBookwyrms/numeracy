@@ -18,4 +18,6 @@ pub enum MatrixError {
     MatrixNotInversible,
     InvalidItemNumbers(Vec<usize>),
     NotAVector,
+    InvalidAxis,
+    NullVector,
 }

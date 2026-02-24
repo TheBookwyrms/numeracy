@@ -3,17 +3,8 @@ use crate::traits::Numerical;
 use crate::enums::MatrixError;
 use crate::vectors::Vector;
 
-impl<T:Numerical> Matrix<T> {
-    /// creates matrix from a scalar value
-    pub fn from_scalar(f:T) -> Matrix<T> {
-        Matrix {shape:vec![1], array:vec![f]}
-    }
-
-    /// creates a 1-dimensional matrix from an array
-    pub fn from_1darray<const M:usize>(arr:[T;M]) -> Matrix<T> {
-        Matrix {shape:vec![arr.len()], array:arr.to_vec()}
-    }
-
+impl<T> Matrix<T> {
+    /// creates a 1-dimensional matrix from a Vector
     pub fn from_vector(vector:Vector<T>) -> Matrix<T> {
         Matrix { shape: vec![vector.num_items()], array: vector.array }
     }
@@ -21,6 +12,18 @@ impl<T:Numerical> Matrix<T> {
     /// creates a 1-dimensional matrix from a vec
     pub fn from_vec(vec:Vec<T>) -> Matrix<T> {
         Matrix {shape:vec![vec.len()], array: vec}
+    }
+}
+
+impl<T:Clone> Matrix<T> {
+    /// creates a 1-dimensional matrix from a slice
+    pub fn from_slice(slice:&[T]) -> Matrix<T> {
+        Matrix {shape:vec![slice.len()], array: slice.to_vec()}
+    }
+
+    /// creates a 1-dimensional matrix from an array
+    pub fn from_1darray<const M:usize>(arr:[T;M]) -> Matrix<T> {
+        Matrix {shape:vec![arr.len()], array:arr.to_vec()}
     }
 
     /// creates a 2-dimensional matrix from a vec of vecs
@@ -44,6 +47,17 @@ impl<T:Numerical> Matrix<T> {
     /// creates a 3-dimensional matrix from an array of arrays of arrays
     pub fn from_3darray<const M:usize, const N:usize, const O:usize>(arr:[[[T;M];N];O]) -> Matrix<T> {
         Matrix {shape:vec![M, N, O], array:arr.concat().concat() }
+    }
+}
+
+
+
+
+
+impl<T:Numerical> Matrix<T> {
+    /// creates matrix from a scalar value
+    pub fn from_scalar(f:T) -> Matrix<T> {
+        Matrix {shape:vec![1], array:vec![f]}
     }
 
     /// returns an identity matrix of order N

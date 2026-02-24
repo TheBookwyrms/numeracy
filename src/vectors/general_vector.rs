@@ -54,6 +54,10 @@ impl<T> Vector<T> {
     pub fn to_matrix(self) -> Matrix<T> {
         Matrix { shape: vec![self.num_items()], array: self.array }
     }
+
+    pub fn is_vec3(&self) -> bool {
+        self.num_items() == 3
+    }
 }
 
 impl<T:Clone> Vector<T> {

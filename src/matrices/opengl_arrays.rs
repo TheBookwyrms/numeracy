@@ -60,6 +60,24 @@ impl Matrix<f32> {
         rot_z
     }
 
+    pub fn rotate_about_arbitrary_axis(axis:Vector<f32>, rotation:f32) -> Matrix<f32> {
+        let r = rotation.to_radians();
+        let (cos, sin) = (r.cos(), r.sin());
+        let n_cos = 1.0-cos;
+        let (vx, vy, vz) = (axis[0], axis[1], axis[2]);
+        let (vxx, vyy, vzz) = (vx.powf(2.0), vy.powf(2.0), vz.powf(2.0));
+        let vm = axis.magnitude();
+
+        let rotation = Matrix::from_2darray([
+            [ (vxx + cos*(vyy + vzz))/vm, (vx*vy*(n_cos))/vm - vz*sin, (vx*vz*(n_cos))/vm - vy*sin, 0.0],
+            [(vx*vy*(n_cos))/vm + vz*sin,  (vyy + cos*(vxx + vzz))/vm, (vy*vz*(n_cos))/vm - vx*sin, 0.0],
+            [(vx*vz*(n_cos))/vm - vy*sin, (vy*vz*(n_cos))/vm + vx*sin,  (vzz + cos*(vxx + vyy))/vm, 0.0],
+            [                        0.0,                         0.0,                         0.0, 1.0],
+        ]).multiply_by_constant(1./vm);
+
+        rotation
+    }
+
     /// 3D rotation matrix based on x, y, and z rotation factors
     /// (rx, ry, rz) are in degrees
     /// rotation occurs around the (relative) origin for the points
@@ -104,14 +122,21 @@ impl Matrix<f32> {
     pub fn opengl_to_right_handed() -> Matrix<f32> {
         Matrix::from_2darray([
 
+            // identity (but z is weird)
             [1.,0.,0.,0.],
             [0.,1.,0.,0.],
             [0.,0.,1.,0.],
             [0.,0.,0.,1.],
 
 
+            // // flips z axis (so negative-z is positive (fixes things, trust me))
+            // [1.,0.,0.,0.],
+            // [0.,1.,0.,0.],
+            // [0.,0.,-1.,0.],
+            // [0.,0.,0.,1.],
 
-            // originally
+
+            // originally this (doesn't work though)
             //[1.,0.,0.,0.],
             //[0.,0.,1.,0.],
             //[0.,1.,0.,0.],

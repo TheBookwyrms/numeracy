@@ -13,6 +13,10 @@ impl<T:Float> Vector<T> {
 }
 
 impl<T:Clone> Vector<T> {
+    /// creates a 1-dimensional matrix from a slice
+    pub fn from_slice(slice:&[T]) -> Vector<T> {
+        Vector {array: slice.to_vec()}
+    }
 
     /// creates vector from a scalar value
     pub fn from_scalar(f:T) -> Vector<T> {

@@ -319,21 +319,26 @@ impl<T:Clone> Matrix<T> {
         if self.ndims() == 2 {
             match idx<self.shape[1] {
                 true => {
-                    let row_len = self.shape[0];
-                    let v = self.array[(idx*row_len)..(idx+1)*row_len].to_vec();
-                    Ok(Matrix { shape:vec![v.len()], array:v })},
+                        let row_len = self.shape[0];
+                        Ok(Matrix::from_slice(&self.array[(idx*row_len)..(idx+1)*row_len]))
+                    },
                 false => Err(MatrixError::InvalidIndex(idx)),
             }
         } else {
             Err(MatrixError::InvalidDimension(self.ndims()))
         }
     }
-
     /// get column j of a matrix
     pub fn get_col(&self, idx:usize)  -> Result<Matrix<T>, MatrixError> {
         if self.ndims() == 2 {
-            let tarr = self.transpose()?;
-            tarr.get_row(idx)
+
+            let row_len = self.shape[0];
+            let nrows = self.shape[1];
+            let mut column = Vec::with_capacity(nrows);
+            for row_i in 0..nrows {
+                column.push(self.array[row_i*row_len..(row_i+1)*row_len][idx].clone());
+            }
+            Ok(Matrix::from_vec(column))
         } else {
             Err(MatrixError::InvalidDimension(self.ndims()))
         }
