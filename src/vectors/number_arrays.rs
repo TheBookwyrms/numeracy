@@ -149,7 +149,7 @@ impl<T:Float> Vector<T> {
         if self.array.iter().all(|a| *a==T::zero()) {
             Err(MatrixError::NullVector)
         } else {
-            Ok(self.clone().multiply_by_constant(T::one()/self.magnitude()))
+            Ok(self.multiply_by_constant(T::one()/self.magnitude()))
         }
     }
 }

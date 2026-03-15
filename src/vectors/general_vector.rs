@@ -58,6 +58,11 @@ impl<T> Vector<T> {
     pub fn is_vec3(&self) -> bool {
         self.num_items() == 3
     }
+
+    pub fn extend(mut self, more:Vec<T>) -> Self {
+        self.array.extend(more);
+        self
+    }
 }
 
 impl<T:Clone> Vector<T> {

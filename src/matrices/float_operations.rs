@@ -1,9 +1,36 @@
+use crate::general_math::comparisons::float_equality;
 use crate::matrices::matrix::Matrix;
 use crate::traits::Float;
 use crate::enums::MatrixError;
 
 
 impl<T:Float> Matrix<T> {
+
+    pub fn rank(&self) -> Result<usize, MatrixError> {
+        let echelon_form = self.echelon()?;
+        //println!("e {}", echelon_form);
+        let nrows = self.shape[1];
+        let mut non_null_rows = 0;
+        for i in 0..nrows {
+            let row_i = echelon_form.get_row(i)?;
+            let null_i = Matrix::null([self.shape[0], 1]);
+
+            let mut is_null = true;
+            for j in 0..self.shape[0] {
+                let feq = float_equality(row_i.array[j], null_i.array[j], -5);
+                is_null = is_null && feq;
+                //println!("i {}, j {}, f1 {}, f2 {}, eq {}, is_null {}", i, j, row_i.array[j], null_i.array[j], feq, is_null);
+            }
+
+            if !is_null {
+                non_null_rows += 1;
+            }
+            //println!("");
+        }
+        //println!("n {}", non_null_rows);
+        //panic!();
+        Ok(non_null_rows)
+    }
 
     /// get the inverse of a matrix
     pub fn inverse(&self) -> Result<Matrix<T>, MatrixError> {
@@ -102,12 +129,15 @@ impl<T:Float> Matrix<T> {
         } else {
             let reduced_echelon = self.reduced_echelon()?;
 
-            let identity = Matrix::<T>::identity(self.shape[1]);
-            let reduced_matrix_left = reduced_echelon.get_submatrix([0..self.shape[0]-1, 0..self.shape[1]])?;
+            let rank = self.rank()?;
+            //let identity = Matrix::<T>::identity(self.shape[1]);
+            let identity = Matrix::<T>::identity(rank);
+            let reduced_matrix_left = reduced_echelon.get_submatrix([0..rank, 0..rank])?;
             
             let re_minus_id = (reduced_matrix_left-identity.clone())?;
             let null = Matrix::<T>::null_from_vec(re_minus_id.shape);
 
+            //println!("{}", reduced_echelon);
 
             let arr_eq = re_minus_id.array == null.array;
 

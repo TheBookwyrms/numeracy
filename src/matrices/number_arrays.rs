@@ -1,7 +1,7 @@
 use crate::{matrices::matrix::Matrix};
 use crate::traits::Numerical;
 use crate::enums::MatrixError;
-use std::ops::{Add, Mul, Neg, Sub};
+use std::ops::{Add, Mul, Neg, Sub, AddAssign};
 
 impl<T:Numerical> Add<Matrix<T>> for Matrix<T> {
     type Output = Result<Matrix<T>, MatrixError>;
@@ -18,6 +18,18 @@ impl<T:Numerical> Add<Matrix<T>> for Matrix<T> {
             v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other.array[idx]);
             
             Ok(Matrix {shape:self.shape, array:v })
+        }
+    }
+}
+impl<T:Numerical> AddAssign<Matrix<T>> for Matrix<T> {
+    /// add two matrices together element-wise
+    fn add_assign(&mut self, other: Self) {
+        if self.ndims() != other.ndims() {
+            Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()])).unwrap()
+        } else if self.shape != other.shape {
+            Err(MatrixError::InvalidShapes([self.shape.clone(), other.shape])).unwrap()
+        } else {
+            self.array.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other.array[idx]);
         }
     }
 }
@@ -86,6 +98,7 @@ impl <T:Numerical> Mul<T> for Matrix<T> {
         Matrix {shape:self.shape, array:v }
     }
 }
+
 
 
 

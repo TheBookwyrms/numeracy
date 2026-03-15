@@ -1,12 +1,17 @@
 a math library written in rust, with some linear algebra capabilities
 
 to-do list:
-- [ ] read through code to find relations, and what type restrictions are needed where, then simplify
+- [ ] fix up matrix rank code
+- [ ] move null rows to bottom of an echelon matrix
 - [ ] add optimization for matrices
+- [ ] least squares solving for matrices
 - [ ] finish adding material from linear algebra course
+- [ ] matrix exponentiation
+- [ ] add MatrixMultiplication trait so matrices can matmul both Matrix and Vector
+
+- [ ] read through code to find relations, and what type restrictions are needed where, then simplify
 - [ ] write tests
 - [ ] write documentation
-- [ ] matrix exponentiation
 
 - [ ] add variables (and therefore Numbers and Operations and etc)
 - [ ] trigonometry
@@ -20,5 +25,3 @@ to-do list:
 - [ ] function stuff (related to R, and definition)
 - [ ] calculus stuff
     - [ ] differentiation
-
-- [ ] add MatrixMultiplication trait so matrices can matmul both Matrix and Vector

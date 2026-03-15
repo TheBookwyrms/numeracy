@@ -61,6 +61,10 @@ impl Matrix<f32> {
     }
 
     pub fn rotate_about_arbitrary_axis(axis:Vector<f32>, rotation:f32) -> Matrix<f32> {
+        // turns the axis into a unit vector
+        // simplifies the resultant matrix
+        let axis = axis.normalise().unwrap();
+
         let r = rotation.to_radians();
         let (cos, sin) = (r.cos(), r.sin());
         let n_cos = 1.0-cos;
@@ -69,13 +73,42 @@ impl Matrix<f32> {
         let vm = axis.magnitude();
 
         let rotation = Matrix::from_2darray([
-            [ (vxx + cos*(vyy + vzz))/vm, (vx*vy*(n_cos))/vm - vz*sin, (vx*vz*(n_cos))/vm - vy*sin, 0.0],
-            [(vx*vy*(n_cos))/vm + vz*sin,  (vyy + cos*(vxx + vzz))/vm, (vy*vz*(n_cos))/vm - vx*sin, 0.0],
-            [(vx*vz*(n_cos))/vm - vy*sin, (vy*vz*(n_cos))/vm + vx*sin,  (vzz + cos*(vxx + vyy))/vm, 0.0],
-            [                        0.0,                         0.0,                         0.0, 1.0],
-        ]).multiply_by_constant(1./vm);
+            [ (vxx + cos*(vyy + vzz)), (vx*vy*(n_cos)) - vz*sin, (vx*vz*(n_cos)) + vy*sin, 0.0],
+            [(vx*vy*(n_cos)) + vz*sin,  (vyy + cos*(vxx + vzz)), (vy*vz*(n_cos)) - vx*sin, 0.0],
+            [(vx*vz*(n_cos)) - vy*sin, (vy*vz*(n_cos)) + vx*sin,  (vzz + cos*(vxx + vyy)), 0.0],
+            [                     0.0,                      0.0,                      0.0, 1.0],
+        ]);
+
+        // for non-unit axes
+        //let rotation = Matrix::from_2darray([
+        //    [ (vxx + cos*(vyy + vzz))/vm, (vx*vy*(n_cos))/vm - vz*sin, (vx*vz*(n_cos))/vm + vy*sin, 0.0],
+        //    [(vx*vy*(n_cos))/vm + vz*sin,  (vyy + cos*(vxx + vzz))/vm, (vy*vz*(n_cos))/vm - vx*sin, 0.0],
+        //    [(vx*vz*(n_cos))/vm - vy*sin, (vy*vz*(n_cos))/vm + vx*sin,  (vzz + cos*(vxx + vyy))/vm, 0.0],
+        //    [                        0.0,                         0.0,                         0.0, 1.0],
+        //]).multiply_by_constant(1./vm);
 
         rotation
+    }
+
+    pub fn rotate_around_p_on_arbitrary_axis(p:Vector<f32>, axis:Vector<f32>, rotation:f32) -> Result<Matrix<f32>, MatrixError> {
+        
+        // p in form (x_offset, y_offset, z_offset)
+        // NOTE : for some reason, y and z switch in calculations
+        // thus, p gets deconstructed as :
+        p.swap_items(1, 2)?;
+        //let (px, pz, py) = p;
+        //let (rx, ry, rz) = r;
+        //println!("p' {}", p);
+
+        let return_to_pos     = Matrix::translate(p.clone());
+        //println!("return to pos {}", return_to_pos);
+        let translate_to_zero = Matrix::translate(p.multiply_by_constant(-1.0));
+        //println!("translate to zero {}", translate_to_zero);
+
+        let rotate = Matrix::rotate_about_arbitrary_axis(axis, rotation);
+        //println!("rotate axis {}", rotate);
+
+        Ok(return_to_pos.matmul(&rotate.matmul(&translate_to_zero)?)?)
     }
 
     /// 3D rotation matrix based on x, y, and z rotation factors
