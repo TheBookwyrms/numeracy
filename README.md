@@ -22,6 +22,6 @@ to-do list:
 - [ ] add solution set for infinite solutions gauss/gauss-jordan elimination
 - [ ] osculation circle and plane
 - [ ] definition of a distance metric of power n
-- [ ] function stuff (related to R, and definition)
+- [ ] function stuff (related to R (as in space of variales (R1, R2, R3, ..., Rn)), and definition)
 - [ ] calculus stuff
     - [ ] differentiation
