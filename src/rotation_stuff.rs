@@ -1,23 +1,19 @@
-use numeracy::matrices::Matrix;
-use numeracy::vectors::Vector;
+use crate::matrices::Matrix;
+use crate::vectors::Vector;
+pub fn rotation_stuff() {
+    let u1 = Matrix::from_1darray([0., 1., 0., 0.]).reshape(vec![1, 4]).unwrap();
+    let r1 = Matrix::rotate(Vector::from_1darray([0., 0., 45.])).unwrap();
+    let r2 = Matrix::rotate(Vector::from_1darray([-45., 0., 0.])).unwrap();
+    let u2 = r1.matmul(&u1).unwrap();
+    let u3 = r2.matmul(&u2).unwrap();
+    println!("u1 {}", u1);
+    //println!("r1 {}", r1);
+    println!("u2 {}", u2);
+    println!("u3 {}", u3);
 
-pub fn main() {
 
-    let (a1, a2, a3):(f64, f64, f64) = (0.15, 0.075, 0.3);
-    let (b1, b2, b3):(f64, f64, f64) = (0.1, 0.1, 0.2);
-    let (r1, r2, r3):(f64, f64, f64) = (6./100., 1.51/100., 0.48);
 
     
-    let augmented_matfull: Matrix<f64> = Matrix::from_2darray([
-        [a1.ln(), b1.ln(), 1.0, r1.ln()],
-        [a2.ln(), b2.ln(), 1.0, r2.ln()],
-        [a3.ln(), b3.ln(), 1.0, r3.ln()]
-    ]);
-
-    let result = augmented_matfull.solve().unwrap();
-    println!("x={}, y={}, ln(k)={}, k={}", result.array[0], result.array[1], result.array[2], std::f64::consts::E.powf(result.array[2]));
-
-
     let mut t = 0.0;
     let mut mat = Matrix::identity(4);
     let pi = std::f32::consts::PI;
@@ -42,4 +38,5 @@ pub fn main() {
     println!("percent differences by item = {:?}", diff.array);
     println!("percent differences by item = {:?}", errs);
     println!("percent differences by item = {:?}", errs.iter().filter(|x| **x>0.0).collect::<Vec<&f32>>());
+    
 }

@@ -1,6 +1,5 @@
 use crate::enums::MatrixError;
 use crate::matrices::Matrix;
-use crate::vectors::Vector;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Point {
@@ -20,6 +19,23 @@ impl Point {
     pub fn t_squared(&self) -> f32 {
         self.dt * self.dt
     }
+}
+
+pub fn do_triangulation() {
+    //unsafe { std::env::set_var("RUST_BACKTRACE", "1") };
+    let p1 = (0., 0., 0.,0.002357);
+    let p2 = (1., 0., 0.,0.002357);
+    let p3 = (0., 1., 0.,0.002357);
+    let p4 = (1., 1., 0.,0.002357);
+
+    let (augm, solved_re) = triangulate(p1, p2, p3, p4);
+    println!("{}", augm);
+    let solved = solved_re.unwrap();
+    println!("<x, y, z, dt> = {}", solved);
+
+    println!("");
+    println!("");
+    println!("");
 }
 
 pub fn triangulate(

@@ -1,4 +1,6 @@
-pub enum MathItem<T> {
+use crate::traits::Numerical;
+
+pub enum MathItem<T:Numerical> {
     Number(T),
     Variable(char),
     Operation(Operation),
@@ -42,7 +44,7 @@ pub enum Operation {
     Floor,
     Ceiling,
     FloorDivision,
-    ModuloDivision,
+    RemainderDivision,
 }
 
 
@@ -76,7 +78,14 @@ impl Operation {
             Operation::Floor => false,
             Operation::Ceiling => false,
             Operation::FloorDivision => false,
-            Operation::ModuloDivision => false,
+            Operation::RemainderDivision => false,
         }
     }
+}
+
+
+#[derive(Debug)]
+pub enum FunctionError {
+    NoChildrenPresent,
+    NotEnoughChildrenPresent,
 }

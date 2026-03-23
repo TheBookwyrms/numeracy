@@ -1,7 +1,7 @@
-use crate::functions_and_math::{enums::MathItem, function::MathTree};
+use crate::{functions_and_math::{enums::MathItem, function::MathTree}, traits::Numerical};
 
-pub trait MathValue<T> {
-    fn as_math_item(value:T) -> MathTree<T>;
+pub trait MathValue<T:Numerical> {
+    fn as_math_item(&self) -> MathTree<T>;
 }
 
 
@@ -9,8 +9,8 @@ pub trait MathValue<T> {
 macro_rules! impl_MathValue_for_number {
     ($value_type:ty) => {
         impl MathValue<$value_type> for $value_type {
-            fn as_math_item(value:$value_type) -> MathTree<$value_type> {
-                MathTree { item: MathItem::Number(value), children:None }
+            fn as_math_item(&self) -> MathTree<$value_type> {
+                MathTree { item: MathItem::Number(*self), children:None }
             }
         }
     };
