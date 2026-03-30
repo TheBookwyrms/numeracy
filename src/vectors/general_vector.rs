@@ -1,7 +1,7 @@
 use crate::enums::MatrixError;
 use crate::matrices::Matrix;
 use crate::vectors::vector::Vector;
-use crate::general_math::comparisons::{self, max};
+use crate::general_math::comparisons::max;
 
 use std::ops::{Index, IndexMut};
 use std::fmt::{Debug, Display};

@@ -1,20 +1,41 @@
 use std::fmt::Display;
 
-use crate::{functions_and_math::enums::{FunctionError, MathItem, Operation, ValueNature, VariableNature}, traits::Numerical};
+use crate::{functions_and_math::{enums::{FunctionError, MathItem, Operation, ValueNature, VariableNature}, traits::MathValue}, traits::Numerical};
+use crate::functions_and_math::common_functions::{cos, sin};
 
-pub struct Function<T:Numerical> {
+pub struct Function<T:MathValue> {
     pub input_type: VariableNature,
     pub output_type: ValueNature,
     pub output: Vec<MathTree<T>>,
 }
 
-pub struct MathTree<T:Numerical> {
+#[derive(Debug)]
+pub struct MathTree<T:MathValue> {
     pub item:MathItem<T>,
     pub children:Option<Vec<MathTree<T>>>,
 }
 
 
-impl<T:Numerical> Display for MathTree<T> {
+
+macro_rules! make_arr_of_mathtree {
+    ($($mt:expr),*) => { [ $($mt),* ] };
+}
+
+
+fn testing_macro() {
+    let a = cos(1);
+    let b = sin(2);
+    
+    let t1 = make_arr_of_mathtree!(a, b);
+}
+
+
+
+
+
+
+
+impl<T:MathValue> Display for MathTree<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.item {
             MathItem::Number(num) => {
@@ -113,6 +134,15 @@ impl<T:Numerical> Display for MathTree<T> {
                     },
                 }
             },
+            MathItem::Indeterminate(form) => {
+                panic!();
+            }
+            MathItem::Matrix(matrix) => {
+                panic!();
+            }
+            MathItem::Vector(vector) => {
+                panic!();
+            }
         }
         Ok(())
     }

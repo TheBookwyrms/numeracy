@@ -1,9 +1,19 @@
-use crate::traits::Numerical;
+use crate::{functions_and_math::traits::MathValue, matrices::Matrix, traits::Numerical, vectors::Vector};
 
-pub enum MathItem<T:Numerical> {
+#[derive(Clone, Copy, Debug)]
+pub enum IndeterminateForm {
+    ZeroMultipliedByInfinity,
+    ZeroDividedByZero
+}
+
+#[derive(Clone, Debug)]
+pub enum MathItem<T:MathValue> {
     Number(T),
     Variable(char),
     Operation(Operation),
+    Indeterminate(IndeterminateForm),
+    Matrix(Matrix<T>),
+    Vector(Vector<T>),
 }
 
 pub enum VariableNature {
@@ -16,6 +26,7 @@ pub enum ValueNature {
     VectorValued
 }
 
+#[derive(Clone, Copy, Debug)]
 pub enum Operation {
     Addition,
     Subtraction,

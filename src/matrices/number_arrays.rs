@@ -3,6 +3,7 @@ use crate::traits::Numerical;
 use crate::enums::MatrixError;
 use std::ops::{Add, Mul, Neg, Sub, AddAssign};
 
+
 impl<T:Numerical> Add<Matrix<T>> for Matrix<T> {
     type Output = Result<Matrix<T>, MatrixError>;
 
