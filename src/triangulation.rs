@@ -66,6 +66,6 @@ pub fn triangulate(
         [2.0*(use_4[0].x-use_4[1].x), 2.0*(use_4[0].y-use_4[1].y), 2.0*(use_4[0].z-use_4[1].z), 2.0*v*v*(use_4[0].dt-use_4[1].dt), use_4[0].sum_p_squared() - use_4[1].sum_p_squared() - v*v*(use_4[0].t_squared() - use_4[1].t_squared())],
     ]);
 
-    let solve = augmented_triangulate_mat.solve();
+    let solve = augmented_triangulate_mat.clone().solve();
     (augmented_triangulate_mat, solve)
 }

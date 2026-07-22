@@ -6,6 +6,10 @@ use crate::general_math::comparisons::max;
 use std::ops::{Index, IndexMut};
 use std::fmt::{Debug, Display};
 
+
+
+
+
 impl<T:Clone> Index<usize> for Vector<T> {
     type Output = T;
     /// indexes a vector by its indices
@@ -59,7 +63,7 @@ impl<T> Vector<T> {
         self.num_items() == 3
     }
 
-    pub fn extend(mut self, more:Vec<T>) -> Self {
+    pub fn extend<U:IntoIterator<Item=T>>(mut self, more:U) -> Self {
         self.array.extend(more);
         self
     }

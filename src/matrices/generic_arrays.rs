@@ -444,41 +444,40 @@ impl<T:Clone> Matrix<T> {
         }
     }
 
-    pub fn flip_vertically(&self) -> Result<Matrix<T>, MatrixError> {
+    pub fn flip_vertically(self) -> Result<Matrix<T>, MatrixError> {
         if self.ndims() != 2 {
             Err(MatrixError::InvalidDimension(self.ndims()))
         } else {
-            let mut narr = self.array.clone();
+            let mut narr = Vec::with_capacity(self.num_items());
 
-            let height = self.shape[1];
             let width = self.shape[0];
+            let height = self.shape[1];
 
             for i in 0..self.shape[1] {
-                narr[i*width..(i+1)*width].clone_from_slice(&&self.array[(height-i-1)*width..(height-i)*width]);
+                let row_slice = &self.array[(height-i-1)*width..(height-i)*width];
+                narr.extend_from_slice(row_slice);
             }
 
             Ok(Matrix { shape: self.shape.clone(), array: narr })
         }
     }
 
-    pub fn reshape(&self, shape:Vec<usize>) -> Result<Matrix<T>, MatrixError> {
-        let mut new_mat = self.clone();
+    pub fn reshape(self, shape:Vec<usize>) -> Result<Matrix<T>, MatrixError> {
         if self.array.len() == shape.iter().product() {
-            new_mat.shape = shape;
-            Ok(new_mat)
+            Ok(Matrix {shape, array:self.array})
         } else {
             Err(MatrixError::InvalidShapes([self.shape.clone(), shape]))
         }
     }
 
-    pub fn new_axis(&self) -> Matrix<T> {
-        let mut new_mat = self.clone();
-        new_mat.shape.push(1);
-        new_mat
+    pub fn new_axis(self) -> Matrix<T> {
+        let mut new_shape = self.shape;
+        new_shape.push(1);
+        Matrix {shape:new_shape, array:self.array}
     }
 
-    pub fn remove_axis(&self, axis:usize) -> Result<Matrix<T>, MatrixError> {
-        let mut new_mat = self.clone();
+    pub fn remove_axis(self, axis:usize) -> Result<Matrix<T>, MatrixError> {
+        //let mut new_mat = self.clone();
 
         let new_shape = self.shape
                                         .clone()
@@ -488,8 +487,9 @@ impl<T:Clone> Matrix<T> {
                                         .map(|(_idx, val)| val)
                                         .collect::<Vec<usize>>();
         if self.array.len() == new_shape.iter().product() {
-            new_mat.shape = new_shape;
-            Ok(new_mat)
+            Ok(Matrix {shape:new_shape, array:self.array})
+            //new_mat.shape = new_shape;
+            //Ok(new_mat)
         } else {
             Err(MatrixError::InvalidShapes([self.shape.clone(), new_shape]))
         }

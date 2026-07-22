@@ -1,28 +1,30 @@
-use crate::functions_and_math::function::MathTree;
 use crate::functions_and_math::common_functions::*;
-use crate::functions_and_math::traits::MathValue;
 
 pub fn functions() {
-    let a = 5;
-    //let a = 5.as_math_item().as_math_item();
-    let b = 6.as_math_item();
-    let added = add(a, b);
-    println!("{}", added);
-    
-    let a = 5.as_math_item();
-    let b = 6.as_math_item();
-    let c = 7;
-    println!("{}", add(a, add(b, c)));
-    
-    let a = 5.as_math_item();
-    let b = 6.as_math_item();
-    let c = 7.as_math_item();
-    println!("{}", add(add(a, b), c));
-    
-    let a = 5.as_math_item();
-    let b = 6.as_math_item();
-    let c = 7.as_math_item();
-    let mut r = add(a, b);
-    r.children = Some(vec![]);
-    println!("{}", add(r, c));
+    let a = number(5);
+    let b = number(6);
+    let c = number(7);
+    let d = number(8);
+    let e = number(9);
+    let f = variable('a');
+    let g = variable('b');
+    let h = variable('c');
+
+    let tests = [
+        add(a.clone(), b.clone()),
+        add(a.clone(), add(b.clone(), c.clone())),
+        a.clone()+b.clone()+c.clone(),
+        cos(a.clone()),
+        cos(sin(pow(a.clone(), b.clone()))+c.clone()-d.clone()),
+        a.clone()+f.clone(),
+        atan(c*f.clone() + a*b),
+        f.clone()+g.clone(),
+        g.clone()*(f.clone()/h.clone()),
+        g.clone()*g.clone()+h.clone()-f.clone()-h+f,
+        g.clone()+g,
+    ];
+
+    for test in tests {
+        println!("{}, {:?}, {:?}", test, test.get_variables(), test.get_variable_nature())
+    }
 }

@@ -1,4 +1,4 @@
-use numeracy::{enums::MatrixForm, matrices::Matrix};
+use numeracy::matrices2::{Matrix, MatrixForm};
 
 #[test]
 fn get_row() {
@@ -61,7 +61,7 @@ fn flip_vertically() {
         [80, 81, 82, 83, 84, 85, 86, 87, 88, 89],
     ]);
 
-    let new_mat = mat.flip_vertically().unwrap();
+    let new_mat = mat.flip_vertically();
 
     assert_eq!(new_mat, Matrix::from_2darray([
         [80, 81, 82, 83, 84, 85, 86, 87, 88, 89],
@@ -107,7 +107,7 @@ fn expand_along_axis_test2() {
         [16, 17, 18],
     ]);
 
-    let extend_ax0 = m1.expand_along_axis(m2, 0).unwrap();
+    let extend_ax0 = m1.expand_horizontally(m2).unwrap();
     //println!("{}", extend_ax0);
 
     assert_eq!(extend_ax0, Matrix::from_2darray([
@@ -130,7 +130,7 @@ fn expand_along_axis_test1() {
         [13, 14, 15],
     ]);
 
-    let extend_ax1 = m1.expand_along_axis(m2, 1).unwrap();
+    let extend_ax1 = m1.expand_vertically(m2).unwrap();
 
     //println!("{}", extend_ax1);
 
@@ -248,7 +248,7 @@ fn reduced_echelon_form() {
         [1.0, 1.0, 2.0, 9.0],
     ]);
 
-    let reduced_echelon_form = mat.reduced_echelon(MatrixForm::Standard).unwrap();
+    let reduced_echelon_form = mat.reduced_echelon(MatrixForm::Standard);
 
     let reduced_echelon_algorithm_by_hand = Matrix::from_2darray([
         [1.0, 0.0, 0.0, 763.0/30.0],
@@ -268,7 +268,7 @@ fn echelon_form() {
         [1.0, 1.0, 2.0, 9.0],
     ]);
 
-    let echelon_form = mat.echelon(MatrixForm::Standard).unwrap();
+    let echelon_form = mat.echelon(MatrixForm::Standard);
 
     let echelon_algorithm_by_hand = Matrix::from_2darray([
         [1.0, 3.0/2.0, 2.0, 3.0/4.0],
@@ -309,9 +309,9 @@ fn column_zeroes() {
 
 #[test]
 fn indices_conversion() {
-    let mat = Matrix::<u8>::null([2, 3, 4]);
-    assert_eq!(mat.linear_index_of(vec![0, 1, 2]), 14);
-    assert_eq!(19, mat.linear_index_of(vec![1, 0, 3]));
+    let mat = Matrix::<u8, 3>::null([2, 3, 4]);
+    assert_eq!(mat.linear_index_of([0, 1, 2]), 14);
+    assert_eq!(19, mat.linear_index_of([1, 0, 3]));
 }
 
 #[test]

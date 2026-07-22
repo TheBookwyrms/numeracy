@@ -1,6 +1,6 @@
-use numeracy::chem_matrix_stuff;
-use numeracy::triangulation;
-use numeracy::rotation_stuff;
+//use numeracy::chem_matrix_stuff;
+//use numeracy::triangulation;
+//use numeracy::rotation_stuff;
 use numeracy::function_stuff;
 
 pub fn main() {

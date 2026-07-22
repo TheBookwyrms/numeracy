@@ -14,3 +14,5 @@ pub mod chem_matrix_stuff;
 pub mod triangulation;
 pub mod rotation_stuff;
 pub mod function_stuff;
+
+pub mod matrices2;

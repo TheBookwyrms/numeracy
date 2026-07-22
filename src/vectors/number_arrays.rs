@@ -13,7 +13,7 @@ impl<T:Numerical> Add<Vector<T>> for Vector<T> {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
         } else {
 
-            let mut v = self.array.clone();
+            let mut v = self.array;
             v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other[idx]);
             
             Ok(Vector {array:v})
@@ -28,7 +28,7 @@ impl<T:Numerical> Add<T> for Vector<T> {
     /// adds an element to all items of a matrix
     fn add(self, other: T) -> Vector<T> {
 
-        let mut v = self.array.clone();
+        let mut v = self.array;
         v.iter_mut().for_each(|val| *val = *val+other);
         
         Vector { array:v }
@@ -44,7 +44,7 @@ impl<T:Numerical> Sub<Vector<T>> for Vector<T> {
             Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
         } else {
 
-            let mut v = self.array.clone();
+            let mut v = self.array;
             v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-other[idx]);
 
             Ok(Vector {array:v})
@@ -58,7 +58,7 @@ impl<T:Numerical> Sub<T> for Vector<T> {
     /// subtracts an element to all items of a matrix
     fn sub(self, other: T) -> Vector<T> {
 
-        let mut v = self.array.clone();
+        let mut v = self.array;
         v.iter_mut().for_each(|val| *val = *val-other);
         
         Vector { array:v }
@@ -70,7 +70,7 @@ impl<T:Numerical + Neg<Output = T>> Neg for Vector<T> {
     /// returns the vector where every element is its negative self
     fn neg(self) -> Vector<T> {
 
-        let mut v = self.array.clone();
+        let mut v = self.array;
         v.iter_mut().for_each(|val| *val = -*val);
         
         Vector { array:v }
@@ -81,7 +81,7 @@ impl <T:Numerical> Mul<T> for Vector<T> {
     type Output = Vector<T>;
     /// returns the vector where every element is multiplied by the other
     fn mul(self, rhs: T) -> Self::Output {
-        let mut v = self.array.clone();
+        let mut v = self.array;
         v.iter_mut().for_each(|val| *val = rhs * *val);
         
         Vector { array:v }
@@ -128,9 +128,9 @@ impl<T:Numerical> Vector<T> {
     }
 
     /// multiplies every element of an n-dimensional matrix by a scalar value
-    pub fn multiply_by_constant(&self, scalar:T) -> Vector<T> {
-        let mut narr = self.array.clone();
-        (0..narr.len()).for_each(|i| narr[i] *= scalar.clone());
+    pub fn multiply_by_constant(self, scalar:T) -> Vector<T> {
+        let mut narr = self.array;
+        (0..narr.len()).for_each(|i| narr[i] *= scalar);
         Vector {array:narr}
     }
 }
@@ -141,15 +141,17 @@ impl<T:Float> Vector<T> {
         T::sqrt(sum_of_multiplications(&self.array, &self.array))
     }
 
-    pub fn project_onto(&self, other:&Vector<T>) -> Result<Vector<T>, MatrixError> {
-        Ok(other.clone().multiply_by_constant(self.dot(&other)?/self.dot(&self)?))
+    pub fn project_onto(&self, other:Vector<T>) -> Result<Vector<T>, MatrixError> {
+        let projection_factor = self.dot(&other)?/self.dot(&self)?;
+        Ok(other.multiply_by_constant(projection_factor))
     }
 
-    pub fn normalise(&self) -> Result<Vector<T>, MatrixError> {
+    pub fn normalise(self) -> Result<Vector<T>, MatrixError> {
         if self.array.iter().all(|a| *a==T::zero()) {
             Err(MatrixError::NullVector)
         } else {
-            Ok(self.multiply_by_constant(T::one()/self.magnitude()))
+            let magnitude = self.magnitude();
+            Ok(self.multiply_by_constant(T::one()/magnitude))
         }
     }
 }

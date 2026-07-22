@@ -1,8 +1,8 @@
 use crate::vectors::Vector;
 
 /// takes a type 1 and a type 2
-/// generates the implementation for From<Matrix<type 1>> for Matrix<type 2>
-/// then converts the elements of the matrix from type 1 to type 2
+/// generates the implementation for From<Vector<type 1>> for Vector<type 2>
+/// then converts the elements of the Vector from type 1 to type 2
 macro_rules! impl_Vector_From_type1_to_type2 {
     ($type_from:ty, $type_to:ty) => {
         impl From<Vector<$type_from>> for Vector<$type_to> {

@@ -1,14 +1,19 @@
-use std::{clone, fmt::{Debug, Display}};
-use std::any::TypeId;
+use std::fmt::Debug;
 
-use crate::{functions_and_math::{enums::MathItem, function::MathTree}, matrices::Matrix, traits::Numerical, vectors::Vector};
+use crate::{functions_and_math::{enums::MathItem, function::MathTree}, matrices::Matrix, vectors::Vector};
 
-pub trait MathValue : Display+Debug+Sized {
+pub trait MathValue : Debug+Sized {
     type U:MathValue;
     fn as_math_item(self) -> MathTree<Self::U>;
 }
 
 
+impl<T:MathValue> MathValue for MathItem<T> {
+    type U = T;
+    fn as_math_item(self) -> MathTree<Self::U> {
+        MathTree::new(self, None)
+    }
+}
 
 impl<T:MathValue> MathValue for MathTree<T> {
     type U = T;
@@ -25,38 +30,69 @@ impl<T:MathValue> MathValue for MathTree<T> {
 impl<T:MathValue+Clone+PartialEq> MathValue for Matrix<T> {
     type U = T;
     fn as_math_item(self) -> MathTree<T> {
-        MathTree {item:MathItem::Matrix(self) , children:None}
+        MathTree::new(MathItem::Matrix(self) , None)
     }
 }
 
 impl<T:MathValue+Clone+PartialEq> MathValue for Vector<T> {
     type U = T;
     fn as_math_item(self) -> MathTree<T> {
-        MathTree {item:MathItem::Vector(self) , children:None}
+        MathTree::new(MathItem::Vector(self) , None)
     }
 }
 
-impl MathValue for &str {
-    type U = Self;
-    fn as_math_item(self) -> MathTree<Self> {
+
+pub trait Variable<T:MathValue> {
+    fn as_variable(self) -> MathTree<T>;
+}
+
+impl<T:MathValue> Variable<T> for char {
+    fn as_variable(self) -> MathTree<T> {
+        MathTree::new(MathItem::Variable(self), None)
+    }
+}
+
+impl<T:MathValue> Variable<T> for &str {
+    fn as_variable(self) -> MathTree<T> {
         let mut chars = self.chars();
         let first_char = chars.nth(0).unwrap();
         let remaining_chars = chars;
         assert!(remaining_chars.count()==0);
-        MathTree {item:MathItem::Variable(first_char) , children:None}
+        MathTree::new(MathItem::Variable(first_char) , None)
     }
 }
 
-impl MathValue for String {
-    type U = Self;
-    fn as_math_item(self) -> MathTree<Self> {
+impl<T:MathValue> Variable<T> for String {
+    fn as_variable(self) -> MathTree<T> {
         let mut chars = self.chars();
         let first_char = chars.nth(0).unwrap();
         let remaining_chars = chars;
         assert!(remaining_chars.count()==0);
-        MathTree {item:MathItem::Variable(first_char) , children:None}
+        MathTree::new(MathItem::Variable(first_char) , None)
     }
 }
+
+//impl<T:MathValue> MathValue for &str {
+//    type U = T;
+//    fn as_math_item(self) -> MathTree<T> {
+//        let mut chars = self.chars();
+//        let first_char = chars.nth(0).unwrap();
+//        let remaining_chars = chars;
+//        assert!(remaining_chars.count()==0);
+//        MathTree::new(MathItem::Variable(first_char) , None)
+//    }
+//}
+//
+//impl MathValue for String {
+//    type U = Self;
+//    fn as_math_item(self) -> MathTree<Self> {
+//        let mut chars = self.chars();
+//        let first_char = chars.nth(0).unwrap();
+//        let remaining_chars = chars;
+//        assert!(remaining_chars.count()==0);
+//        MathTree::new(MathItem::Variable(first_char) , None)
+//    }
+//}
 
 
 macro_rules! impl_MathValue_for_number {
@@ -65,7 +101,7 @@ macro_rules! impl_MathValue_for_number {
         impl MathValue for $value_type {
             type U = $value_type;
             fn as_math_item(self) -> MathTree<$value_type> {
-                MathTree { item: MathItem::Number(self), children:None }
+                MathTree::new(MathItem::Number(self), None)
             }
         }
     };

@@ -1,4 +1,6 @@
-use crate::{functions_and_math::traits::MathValue, matrices::Matrix, traits::Numerical, vectors::Vector};
+use crate::functions_and_math::traits::MathValue;
+use crate::matrices::Matrix;
+use crate::vectors::Vector;
 
 #[derive(Clone, Copy, Debug)]
 pub enum IndeterminateForm {
@@ -16,7 +18,9 @@ pub enum MathItem<T:MathValue> {
     Vector(Vector<T>),
 }
 
+#[derive(Debug, Clone, Copy)]
 pub enum VariableNature {
+    Constant,
     SingleVariable,
     MultiVariable,
 }
@@ -51,6 +55,10 @@ pub enum Operation {
     Log10,
     Ln,
 
+    //DotProduct,
+    //CrossProduct,
+    //MatrixMultiplication,
+
     AbsoluteValue,
     Floor,
     Ceiling,
@@ -60,7 +68,7 @@ pub enum Operation {
 
 
 impl Operation {
-    pub fn is_differentiable(self) -> bool {
+    pub fn is_differentiable(&self) -> bool {
         match self {
             Operation::Addition => true,
             Operation::Subtraction => true,
@@ -92,11 +100,43 @@ impl Operation {
             Operation::RemainderDivision => false,
         }
     }
+    pub fn symbol(&self) -> &str {
+        match self {
+            Operation::Addition => "+",
+            Operation::Subtraction => "-",
+            Operation::Multiplication => "*",
+            Operation::Division => "/",
+            Operation::Exponentiation => "^",
+            
+            Operation::Cosine => "cos",
+            Operation::Sine => "sin",
+            Operation::Tangent => "tan",
+            Operation::Secant => "sec",
+            Operation::Cosecant => "csc",
+            Operation::Cotangent => "cot",
+
+            Operation::ArcCosine => "arccos",
+            Operation::ArcSine => "arcsin",
+            Operation::ArcTangent => "arctan",
+            Operation::ArcSecant => "arcsec",
+            Operation::ArcCosecant => "arccsc",
+            Operation::ArcCotangent => "arccot",
+
+            Operation::Log10 => "log10",
+            Operation::Ln => "ln",
+
+            Operation::AbsoluteValue => "|",
+            Operation::Floor => "floor",
+            Operation::Ceiling => "ceil",
+            Operation::FloorDivision => "floordiv",
+            Operation::RemainderDivision => "remainder",
+        }
+    }
 }
 
 
 #[derive(Debug)]
 pub enum FunctionError {
-    NoChildrenPresent,
-    NotEnoughChildrenPresent,
+    NoOperationChildren,
+    IncorrectOperationChildrenQuantity,
 }
