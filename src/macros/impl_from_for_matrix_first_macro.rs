@@ -1,4 +1,4 @@
-use crate::matrices::Matrix;
+use crate::_matrix_first_version::Matrix;
 
 /// takes a type 1 and a type 2
 /// generates the implementation for From<Matrix<type 1>> for Matrix<type 2>

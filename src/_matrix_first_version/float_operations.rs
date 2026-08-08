@@ -1,5 +1,5 @@
 use crate::general_math::comparisons::float_equality;
-use crate::matrices::matrix::Matrix;
+use crate::_matrix_first_version::matrix::Matrix;
 use crate::traits::Float;
 use crate::enums::{MatrixError, MatrixForm, InverseMethod};
 

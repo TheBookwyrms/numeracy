@@ -1,4 +1,4 @@
-use crate::matrices::Matrix;
+use crate::matrix::Matrix;
 
 pub fn do_chem_stuff() {
 
@@ -7,7 +7,7 @@ pub fn do_chem_stuff() {
     let (r1, r2, r3):(f64, f64, f64) = (6./100., 1.51/100., 0.48);
 
     
-    let augmented_matfull: Matrix<f64> = Matrix::from_2darray([
+    let augmented_matfull = Matrix::from_2darray([
         [a1.ln(), b1.ln(), 1.0, r1.ln()],
         [a2.ln(), b2.ln(), 1.0, r2.ln()],
         [a3.ln(), b3.ln(), 1.0, r3.ln()]

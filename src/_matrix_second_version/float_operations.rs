@@ -1,7 +1,7 @@
 use crate::general_math::comparisons::float_equality;
-use crate::matrices2::matrix::Matrix;
+use crate::_matrix_second_version::matrix::Matrix;
 use crate::traits::Float;
-use crate::matrices2::enums::{MatrixError, MatrixForm, InverseMethod};
+use crate::_matrix_second_version::enums::{MatrixError, MatrixForm, InverseMethod};
 
 
 impl<T:Float> Matrix<T, 2> {

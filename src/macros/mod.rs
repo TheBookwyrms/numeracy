@@ -1,6 +1,13 @@
-mod impl_from_for_matrix_macro;
-mod impl_from_for_vector_macro;
+// old deprecated macro stuff
+mod impl_from_for_matrix_first_macro;
+mod impl_from_for_vector_first_macro;
+mod impl_partialeq_for_matrix_first_macro;
+mod impl_partialeq_for_matrix_second_macro;
+mod impl_partialeq_for_vector_first_macro;
 
-mod impl_partialeq_for_matrix_macro;
-mod impl_partialeq_for_matrix2_macro;
-mod impl_partialeq_for_vector_macro;
+
+
+mod impl_partialeq_for_matrix_third_macro;
+mod impl_from_for_matrix_third_macro;
+mod impl_from_for_vector_second_macro;
+mod impl_partialeq_for_vector_second_macro;

@@ -1,7 +1,7 @@
-use crate::matrices2::matrix::Matrix;
+use crate::_matrix_second_version::matrix::Matrix;
 use crate::traits::Numerical;
 use crate::enums::MatrixError;
-use crate::vectors::Vector;
+use crate::_vectors_first_version::Vector;
 
 impl<T> Matrix<T, 1> {
     /// creates a 1-dimensional matrix from a Vector

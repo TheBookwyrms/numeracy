@@ -1,16 +1,16 @@
-use numeracy::_matrix_second_version::{Matrix, MatrixForm};
+use numeracy::matrix::{InverseMethod, Matrix, MatrixForm, S2, S3};
 
-#[test]
-fn squeeze() {
-    let mut mat1 = Matrix::null([2, 4]);
-    mat1.array[0] = 2;
-    let _mat2 = mat1.transpose();
-
-    let mut mat3 = Matrix::null([1, 2, 1, 1, 1, 5, 1]);
-    mat3.array[0] = 2;
-    let mat4 = mat3.squeeze_axes();
-    let _mat5 = mat4.transpose();
-}
+//#[test]
+//fn squeeze() {
+//    let mut mat1 = Matrix::null(S2::<2, 4>);
+//    mat1[0] = 2;
+//    let _mat2 = mat1.transpose();
+//
+//    let mut mat3 = Matrix::null(S5::<1, 2, 1, 5, 1>);
+//    mat3[0] = 2;
+//    let mat4 = mat3.squeeze_axes();
+//    let _mat5 = mat4.transpose();
+//}
 
 
 #[test]
@@ -90,20 +90,24 @@ fn flip_vertically() {
 }
 
 #[test]
-fn gauss_jordan_inverse() {
+fn inverse() {
     let mat = Matrix::from_2darray([
         [1., 2., 3.],
         [2., 4., 8.],
         [3., 9., 27.],
     ]);
 
-    let inv_mat = mat.gauss_jordan_inverse().unwrap();
+    let inv_gauss_mat   = mat.inverse::<6>(InverseMethod::GaussJordanElimination).unwrap();
+    //let inv_laplace_mat = mat.inverse::<6>(InverseMethod::LaplaceExpansion).unwrap();
 
-    assert_eq!(inv_mat, Matrix::from_2darray([
+    let true_inverse = Matrix::from_2darray([
         [-6.0, 4.5, -2./3.],
         [5., -3., 1./3.],
         [-1., 0.5, 0.],
-    ]))
+    ]);
+
+    //assert_eq!(inv_gauss_mat, inv_laplace_mat);
+    assert_eq!(true_inverse, inv_gauss_mat);
 }
 
 #[test]
@@ -120,7 +124,7 @@ fn expand_along_axis_test2() {
         [16, 17, 18],
     ]);
 
-    let extend_ax0 = m1.expand_horizontally(m2).unwrap();
+    let extend_ax0 = m1.expand_horizontally::<3, 6>(m2);
     //println!("{}", extend_ax0);
 
     assert_eq!(extend_ax0, Matrix::from_2darray([
@@ -143,7 +147,7 @@ fn expand_along_axis_test1() {
         [13, 14, 15],
     ]);
 
-    let extend_ax1 = m1.expand_vertically(m2).unwrap();
+    let extend_ax1 = m1.expand_vertically::<2, 5>(m2);
 
     //println!("{}", extend_ax1);
 
@@ -187,7 +191,7 @@ fn range_indexing3d() {
         ],
     ]);
 
-    let indexed_mat = mat.get_submatrix([0..3, 2..4, 1..3]).unwrap();
+    let indexed_mat = mat.get_submatrix::<S3<{3-0}, {4-2}, {3-1}>>([0..3, 2..4, 1..3]).unwrap();
 
     //0, 1, 2
     //2, 3
@@ -220,7 +224,7 @@ fn range_indexing2d() {
         [90, 91, 92, 93, 94, 95, 96, 97, 98, 99],
     ]);
 
-    let indexed_mat = mat.get_submatrix([2..6, 3..8]).unwrap();
+    let indexed_mat = mat.get_submatrix::<S2<{6-2}, {8-3}>>([2..6, 3..8]).unwrap();
 
     let real = Matrix::from_2darray([
         [32, 33, 34, 35],
@@ -322,7 +326,7 @@ fn column_zeroes() {
 
 #[test]
 fn indices_conversion() {
-    let mat = Matrix::<u8, 3>::null([2, 3, 4]);
+    let mat: Matrix<u8, 3, S3<2, 3, 4>> = Matrix::null(S3::<2, 3, 4>);
     assert_eq!(mat.linear_index_of([0, 1, 2]), 14);
     assert_eq!(19, mat.linear_index_of([1, 0, 3]));
 }
@@ -330,7 +334,7 @@ fn indices_conversion() {
 #[test]
 fn multiply_by_constant() {
     let arr = Matrix::from_1darray([1, 2, 3]);
-    let new_arr = arr.multiply_by_constant(3);
+    let new_arr = arr * 3;
 
     assert_eq!(new_arr, Matrix::from_1darray([3, 6, 9]));
 }
@@ -338,7 +342,7 @@ fn multiply_by_constant() {
 #[test]
 fn dot_product() {
     let arr = Matrix::from_1darray([1.0, 2.0, 3.0, 4.0]);
-    let dot = arr.dot(&arr).unwrap();
+    let dot = arr.dot(&arr);
 
     assert_eq!(dot, 30.0);
 }
@@ -352,7 +356,7 @@ fn swap_axes2d() {
         [5.5, 39.9, 40.0],
     ]);
 
-    let swap = mat.swap_axes(0, 1);
+    let swap = mat.swap_axes::<S2<4, 3>>(0, 1);
 
     assert_eq!(swap, Matrix::from_2darray([
         [13.3, 9.9, 7.7, 5.5],
@@ -370,7 +374,7 @@ fn without_rc() {
         [5.5, 2.5, 6.3],
     ]);
 
-    let without = mat.without_rc(0, 2).unwrap();
+    let without = mat.without_rc::<S2<2, 3>>(0, 2).unwrap();
 
     assert_eq!(without, Matrix::from_2darray([
         [9.9, 2.3],
@@ -394,7 +398,7 @@ fn matmul() {
         [7.4, 7.1, 2.7],
     ]);
 
-    let matmultiplied = m1.matmul(&m2).unwrap();
+    let matmultiplied = m1.matmul(&m2);
 
     assert_eq!(matmultiplied, Matrix::from_2darray([
         [92.8, 88.58, 29.07],

@@ -1,4 +1,4 @@
-use crate::{geometry_3d::shapes::Line, traits::Float, vectors::Vector};
+use crate::{geometry_3d::shapes::Line, traits::Float, _vectors_first_version::Vector};
 
 impl<T:Float> Line<T> {
     pub fn passing_point_parallel_with(point:Vector<T>, parallel:Vector<T>) -> Line<T> {

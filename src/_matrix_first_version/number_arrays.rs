@@ -1,16 +1,18 @@
-use crate::vectors::Vector;
-use crate::{matrices2::matrix::Matrix};
+use crate::_vectors_first_version::Vector;
+use crate::{_matrix_first_version::matrix::Matrix};
 use crate::traits::Numerical;
-use crate::matrices2::enums::MatrixError;
+use crate::enums::MatrixError;
 use std::ops::{Add, Mul, Neg, Sub, AddAssign};
 
 
-impl<T:Numerical, const N:usize> Add<Matrix<T, N>> for Matrix<T, N> {
-    type Output = Result<Matrix<T, N>, MatrixError<N>>;
+impl<T:Numerical> Add<Matrix<T>> for Matrix<T> {
+    type Output = Result<Matrix<T>, MatrixError>;
 
     /// add two matrices together element-wise
-    fn add(self, other: Self) -> Result<Matrix<T, N>, MatrixError<N>> {
-        if self.shape != other.shape {
+    fn add(self, other: Self) -> Result<Matrix<T>, MatrixError> {
+        if self.ndims() != other.ndims() {
+            Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
+        } else if self.shape != other.shape {
             Err(MatrixError::InvalidShapes([self.shape, other.shape]))
         } else {
 
@@ -21,21 +23,23 @@ impl<T:Numerical, const N:usize> Add<Matrix<T, N>> for Matrix<T, N> {
         }
     }
 }
-impl<T:Numerical, const N:usize> AddAssign<Matrix<T, N>> for Matrix<T, N> {
+impl<T:Numerical> AddAssign<Matrix<T>> for Matrix<T> {
     /// add two matrices together element-wise
     fn add_assign(&mut self, other: Self) {
-        if self.shape != other.shape {
-            Err(MatrixError::InvalidShapes([self.shape, other.shape])).unwrap()
+        if self.ndims() != other.ndims() {
+            Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()])).unwrap()
+        } else if self.shape != other.shape {
+            Err(MatrixError::InvalidShapes([self.shape.clone(), other.shape])).unwrap()
         } else {
             self.array.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other.array[idx]);
         }
     }
 }
 
-impl<T:Numerical, const N:usize> Add<T> for Matrix<T, N> {
-    type Output = Matrix<T, N>;
+impl<T:Numerical> Add<T> for Matrix<T> {
+    type Output = Matrix<T>;
     /// adds an element to all items of a matrix
-    fn add(self, other: T) -> Matrix<T, N> {
+    fn add(self, other: T) -> Matrix<T> {
 
         let mut v = self.array;
         v.iter_mut().for_each(|val| *val = *val+other);
@@ -44,11 +48,11 @@ impl<T:Numerical, const N:usize> Add<T> for Matrix<T, N> {
     }
 }
 
-impl<T:Numerical, const N:usize> Sub<Matrix<T, N>> for Matrix<T, N> {
-    type Output = Result<Self, MatrixError<N>>;
+impl<T:Numerical> Sub<Matrix<T>> for Matrix<T> {
+    type Output = Result<Self, MatrixError>;
 
     /// subtracts two matrices element-wise
-    fn sub(self, other: Self) -> Result<Self, MatrixError<N>> {
+    fn sub(self, other: Self) -> Result<Self, MatrixError> {
         if self.ndims() != other.ndims() {
             Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
         } else if self.shape != other.shape {
@@ -62,10 +66,10 @@ impl<T:Numerical, const N:usize> Sub<Matrix<T, N>> for Matrix<T, N> {
         }
     }
 }
-impl<T:Numerical, const N:usize> Sub<T> for Matrix<T, N> {
-    type Output = Matrix<T, N>;
+impl<T:Numerical> Sub<T> for Matrix<T> {
+    type Output = Matrix<T>;
     /// subtracts an element to all items of a matrix
-    fn sub(self, other: T) -> Matrix<T, N> {
+    fn sub(self, other: T) -> Matrix<T> {
 
         let mut v = self.array;
         v.iter_mut().for_each(|val| *val = *val-other);
@@ -74,10 +78,10 @@ impl<T:Numerical, const N:usize> Sub<T> for Matrix<T, N> {
     }
 }
 
-impl<T:Numerical + Neg<Output = T>, const N:usize> Neg for Matrix<T, N> {
-    type Output = Matrix<T, N>;
+impl<T:Numerical + Neg<Output = T>> Neg for Matrix<T> {
+    type Output = Matrix<T>;
     /// returns the matrix where every element is its negative self
-    fn neg(self) -> Matrix<T, N> {
+    fn neg(self) -> Matrix<T> {
 
         let mut v = self.array;
         v.iter_mut().for_each(|val| *val = -T::one() *  *val);
@@ -86,8 +90,8 @@ impl<T:Numerical + Neg<Output = T>, const N:usize> Neg for Matrix<T, N> {
     }
 }
 
-impl <T:Numerical, const N:usize> Mul<T> for Matrix<T, N> {
-    type Output = Matrix<T, N>;
+impl <T:Numerical> Mul<T> for Matrix<T> {
+    type Output = Matrix<T>;
     /// returns the matrix where every element is multiplied by the other
     fn mul(self, other: T) -> Self::Output {
         let mut v = self.array;
@@ -100,10 +104,10 @@ impl <T:Numerical, const N:usize> Mul<T> for Matrix<T, N> {
 
 
 
-impl<T:Numerical + Neg<Output = T>, const N:usize> Matrix<T, N> {
+impl<T:Numerical + Neg<Output = T>> Matrix<T> {
     
     /// performs the dot product of two vectors (1D matrices) 
-    pub fn dot(&self, other:&Self) -> Result<T, MatrixError<N>> {
+    pub fn dot(&self, other:&Self) -> Result<T, MatrixError> {
         let v1 = Vector::from_slice(&self.array);
         let v2 = Vector::from_slice(&other.array);
 
@@ -111,20 +115,12 @@ impl<T:Numerical + Neg<Output = T>, const N:usize> Matrix<T, N> {
         Ok(dot)
     }
 
-    /// multiplies every element of an n-dimensional matrix by a scalar value
-    pub fn multiply_by_constant(self, scalar:T) -> Matrix<T, N> {
-        let mut narr = self.array;
-        (0..narr.len()).for_each(|i| narr[i] *= scalar);
-        Matrix {shape:self.shape, array:narr }
-    }
-
-}
-
-impl<T:Numerical + Neg<Output = T>> Matrix<T, 2> {
     /// performs the matrix multiplication of 2 2D matrices
-    pub fn matmul(&self, other:&Self) -> Result<Matrix<T, 2>, MatrixError<2>> {
-        if !(self.shape[0]==other.shape[1]) {
-            Err(MatrixError::InvalidShapes([self.shape, other.shape]))
+    pub fn matmul(&self, other:&Self) -> Result<Matrix<T>, MatrixError> {
+        if (self.ndims() != 2) || (other.ndims() != 2) {
+            Err(MatrixError::InvalidDimensions([self.ndims(), other.ndims()]))
+        } else if !(self.shape[0]==other.shape[1]) {
+            Err(MatrixError::InvalidShapes([self.shape.clone(), other.shape.clone()]))
         } else {
             let mut rows = vec![];
             for r in 0..self.shape[1] {
@@ -138,14 +134,23 @@ impl<T:Numerical + Neg<Output = T>> Matrix<T, 2> {
                 rows.extend(this_row);
             }
 
-            Ok(Matrix {shape:[other.shape[0], self.shape[1]], array:rows })
+            Ok(Matrix {shape:vec![other.shape[0], self.shape[1]], array:rows })
         }
+    }
+
+    /// multiplies every element of an n-dimensional matrix by a scalar value
+    pub fn multiply_by_constant(self, scalar:T) -> Matrix<T> {
+        let mut narr = self.array;
+        (0..narr.len()).for_each(|i| narr[i] *= scalar);
+        Matrix {shape:self.shape, array:narr }
     }
     
     /// gets the minor of a matrix for row i and column j
-    pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<2>> {
-        if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape))
+    pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError> {
+        if self.ndims() != 2 {
+            Err(MatrixError::InvalidDimension(self.ndims()))
+        } else if self.shape[0] != self.shape[1] {
+            Err(MatrixError::InvalidShape(self.shape.clone()))
         } else {
             let minor = self.without_rc(row_i, col_j)?.laplace_expansion();
             minor
@@ -153,9 +158,11 @@ impl<T:Numerical + Neg<Output = T>> Matrix<T, 2> {
     }
 
     /// gets the cofactor of a matrix for row i and column j
-    pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<2>> {
-        if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape))
+    pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError> {
+        if self.ndims() != 2 {
+            Err(MatrixError::InvalidDimension(self.ndims()))
+        } else if self.shape[0] != self.shape[1] {
+            Err(MatrixError::InvalidShape(self.shape.clone()))
         } else {
             let minor = self.without_rc(row_i, col_j)?.laplace_expansion()?;
 
@@ -173,9 +180,11 @@ impl<T:Numerical + Neg<Output = T>> Matrix<T, 2> {
     }
 
     /// get the determinant of a matrix via laplace expansion
-    pub fn laplace_expansion(&self) -> Result<T, MatrixError<2>> {
-        if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape))
+    pub fn laplace_expansion(&self) -> Result<T, MatrixError> {
+        if self.ndims() != 2 {
+            Err(MatrixError::InvalidDimension(self.ndims()))
+        } else if self.shape[0] != self.shape[1] {
+            Err(MatrixError::InvalidShape(self.shape.clone()))
         } else if self.shape[0] == 2 {
             let a = self[[0, 0]];
             let b = self[[0, 1]];
@@ -195,9 +204,11 @@ impl<T:Numerical + Neg<Output = T>> Matrix<T, 2> {
     }
 
     /// get the matrix of cofactors of the original matrix
-    pub fn cofactor_matrix(&self) -> Result<Matrix<T, 2>, MatrixError<2>> {
-        if self.shape[0] != self.shape[1] {
-            Err(MatrixError::InvalidShape(self.shape))
+    pub fn cofactor_matrix(&self) -> Result<Matrix<T>, MatrixError> {
+        if self.ndims() != 2 {
+            Err(MatrixError::InvalidDimension(self.ndims()))
+        }  else if self.shape[0] != self.shape[1] {
+            Err(MatrixError::InvalidShape(self.shape.clone()))
         } else {
             let num_cofactors = self.num_items();
             let mut cofactors = Vec::with_capacity(num_cofactors);
@@ -208,20 +219,22 @@ impl<T:Numerical + Neg<Output = T>> Matrix<T, 2> {
             }
 
             // transposed because of swapped linear algebra indexing conventions
-            Ok(Matrix {shape:self.shape, array:cofactors }.transpose())
+            Matrix {shape:self.shape.clone(), array:cofactors }.transpose()
         }
     }
 
     /// determines if the column j of a matrix is null (zero)
-    pub fn col_is_null(&self, col_j:usize) -> Result<bool, MatrixError<2>> {
-        let column = self.get_col(col_j)?;
-        let zeroes = (0..column.array.len()).map(|i| column.array[i]==T::zero()).all(|b| b==true);
-        Ok(zeroes)
+    pub fn col_is_null(&self, col_j:usize) -> Result<bool, MatrixError> {
+        if self.ndims() == 2 {
+            let column = self.get_col(col_j)?;
+            let zeroes = (0..column.array.len()).map(|i| column.array[i]==T::zero()).all(|b| b==true);
+            Ok(zeroes)
+        } else {
+            Err(MatrixError::InvalidDimension(self.ndims()))
+        }
     }
-}
 
-impl<T:Numerical + Neg<Output = T>> Matrix<T, 1> {
-    pub fn cross_product(&self, other:&Matrix<T, 1>) -> Result<Matrix<T, 1>, MatrixError<1>> {
+    pub fn cross_product(&self, other:&Matrix<T>) -> Result<Matrix<T>, MatrixError> {
         let v1 = Vector::from_slice(&self.array);
         let v2 = Vector::from_slice(&other.array);
 

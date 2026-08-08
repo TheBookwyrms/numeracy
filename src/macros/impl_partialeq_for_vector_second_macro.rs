@@ -9,8 +9,8 @@ use crate::general_math::comparisons::float_equality;
 /// then they are equal
 macro_rules! impl_vector_partialeq_exact_values {
     ($typename:ty) => {
-        impl PartialEq for Vector<$typename> {
-            fn eq(&self, other:&Vector<$typename>) -> bool {
+        impl<const LEN:usize> PartialEq for Vector<$typename, LEN> {
+            fn eq(&self, other:&Vector<$typename, LEN>) -> bool {
                 self.array == other.array
             }
         }
@@ -24,8 +24,8 @@ macro_rules! impl_vector_partialeq_exact_values {
 /// then they are equal
 macro_rules! impl_vector_partialeq_float_equality {
     ($typename:ty) => {
-        impl PartialEq for Vector<$typename> {
-            fn eq(&self, other:&Vector<$typename>) -> bool {
+        impl<const LEN:usize> PartialEq for Vector<$typename, LEN> {
+            fn eq(&self, other:&Vector<$typename, LEN>) -> bool {
                 let mut val_eq = vec![false;self.array.len()];
                 val_eq.iter_mut()
                       .enumerate()

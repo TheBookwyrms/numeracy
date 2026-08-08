@@ -1,6 +1,6 @@
 use crate::enums::MatrixError;
-use crate::matrix::{Matrix, S1};
-use crate::vectors::vector::Vector;
+use crate::_matrix_second_version::Matrix;
+use crate::_vectors_first_version::vector::Vector;
 use crate::general_math::comparisons::max;
 
 use std::ops::{Index, IndexMut};
@@ -10,7 +10,7 @@ use std::fmt::{Debug, Display};
 
 
 
-impl<T:Clone, const LEN:usize> Index<usize> for Vector<T, LEN> {
+impl<T:Clone> Index<usize> for Vector<T> {
     type Output = T;
     /// indexes a vector by its indices
     fn index(&self, idx:usize) -> &Self::Output {
@@ -18,23 +18,22 @@ impl<T:Clone, const LEN:usize> Index<usize> for Vector<T, LEN> {
     }
 }
 
-impl<T:Clone, const LEN:usize> IndexMut<usize> for Vector<T, LEN> {
+impl<T:Clone> IndexMut<usize> for Vector<T> {
     /// mutably indexes a vector by indices
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.array[index]
     }
 }
 
-impl<T:Display + Debug + PartialEq + Clone, const LEN:usize> Display for Vector<T, LEN> {
+impl<T:Display + Debug + PartialEq + Clone> Display for Vector<T> {
     /// format implementation for vector
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{:?}", self.array.as_slice())
-        //write!(f, "{:?}", self.array.as_slice())
     }
 }
 
 
-impl<T, const LEN:usize> Vector<T, LEN> {
+impl<T> Vector<T> {
     pub fn num_items(&self) -> usize {
         self.array.len()
     }
@@ -56,8 +55,8 @@ impl<T, const LEN:usize> Vector<T, LEN> {
         num_items*type_size
     }
 
-    pub fn to_matrix(self) -> Matrix<T, 1, S1<LEN>> {
-        Matrix { shape: S1::<LEN>, array: self.array }
+    pub fn to_matrix(self) -> Matrix<T, 1> {
+        Matrix { shape: [self.num_items()], array: self.array }
     }
 
     pub fn is_vec3(&self) -> bool {
@@ -70,8 +69,8 @@ impl<T, const LEN:usize> Vector<T, LEN> {
     }
 }
 
-impl<T:Clone, const LEN:usize> Vector<T, LEN> {
-    pub fn swap_items(&self, idx1:usize, idx2:usize) -> Result<Vector<T, LEN>, MatrixError> {
+impl<T:Clone> Vector<T> {
+    pub fn swap_items(&self, idx1:usize, idx2:usize) -> Result<Vector<T>, MatrixError> {
         if max(vec![idx1, idx2]) >= self.num_items() {
             Err(MatrixError::InvalidIndex(max(vec![idx1, idx2])))
         } else {

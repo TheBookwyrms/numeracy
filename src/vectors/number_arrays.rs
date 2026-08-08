@@ -4,29 +4,24 @@ use crate::traits::Numerical;
 use crate::enums::MatrixError;
 use std::ops::{Add, AddAssign, Sub, SubAssign, Neg, Mul};
 
-impl<T:Numerical> Add<Vector<T>> for Vector<T> {
-    type Output = Result<Vector<T>, MatrixError>;
+impl<T:Numerical, const LEN:usize> Add<Vector<T, LEN>> for Vector<T, LEN> {
+    type Output = Self;
 
     /// add two matrices together element-wise
-    fn add(self, other: Self) -> Result<Vector<T>, MatrixError> {
-        if self.num_items() != other.num_items() {
-            Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else {
-
-            let mut v = self.array;
-            v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other[idx]);
-            
-            Ok(Vector {array:v})
-        }
+    fn add(self, other: Self) -> Self {
+        let mut v = self.array;
+        v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+other[idx]);
+        
+        Vector {array:v}
     }
 }
 
 
 
-impl<T:Numerical> Add<T> for Vector<T> {
-    type Output = Vector<T>;
+impl<T:Numerical, const LEN:usize> Add<T> for Vector<T, LEN> {
+    type Output = Self;
     /// adds an element to all items of a matrix
-    fn add(self, other: T) -> Vector<T> {
+    fn add(self, other: T) -> Self {
 
         let mut v = self.array;
         v.iter_mut().for_each(|val| *val = *val+other);
@@ -35,28 +30,23 @@ impl<T:Numerical> Add<T> for Vector<T> {
     }
 }
 
-impl<T:Numerical> Sub<Vector<T>> for Vector<T> {
-    type Output = Result<Self, MatrixError>;
+impl<T:Numerical, const LEN:usize> Sub<Vector<T, LEN>> for Vector<T, LEN> {
+    type Output = Self;
 
     /// subtracts two matrices element-wise
-    fn sub(self, other: Self) -> Result<Self, MatrixError> {
-        if self.num_items() != other.num_items() {
-            Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else {
+    fn sub(self, other: Self) -> Self {
+        let mut v = self.array;
+        v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-other[idx]);
 
-            let mut v = self.array;
-            v.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-other[idx]);
-
-            Ok(Vector {array:v})
-        }
+        Vector {array:v}
     }
 }
 
 
-impl<T:Numerical> Sub<T> for Vector<T> {
-    type Output = Vector<T>;
+impl<T:Numerical, const LEN:usize> Sub<T> for Vector<T, LEN> {
+    type Output = Self;
     /// subtracts an element to all items of a matrix
-    fn sub(self, other: T) -> Vector<T> {
+    fn sub(self, other: T) -> Self {
 
         let mut v = self.array;
         v.iter_mut().for_each(|val| *val = *val-other);
@@ -65,10 +55,10 @@ impl<T:Numerical> Sub<T> for Vector<T> {
     }
 }
 
-impl<T:Numerical + Neg<Output = T>> Neg for Vector<T> {
-    type Output = Vector<T>;
+impl<T:Numerical + Neg<Output = T>, const LEN:usize> Neg for Vector<T, LEN> {
+    type Output = Self;
     /// returns the vector where every element is its negative self
-    fn neg(self) -> Vector<T> {
+    fn neg(self) -> Self {
 
         let mut v = self.array;
         v.iter_mut().for_each(|val| *val = -*val);
@@ -77,8 +67,8 @@ impl<T:Numerical + Neg<Output = T>> Neg for Vector<T> {
     }
 }
 
-impl <T:Numerical> Mul<T> for Vector<T> {
-    type Output = Vector<T>;
+impl <T:Numerical, const LEN:usize> Mul<T> for Vector<T, LEN> {
+    type Output = Self;
     /// returns the vector where every element is multiplied by the other
     fn mul(self, rhs: T) -> Self::Output {
         let mut v = self.array;
@@ -89,64 +79,58 @@ impl <T:Numerical> Mul<T> for Vector<T> {
 }
 
 
-impl<T:Numerical> AddAssign for Vector<T> {
+impl<T:Numerical, const LEN:usize> AddAssign for Vector<T, LEN> {
     fn add_assign(&mut self, rhs: Self) {
         self.array.iter_mut().enumerate().for_each(|(idx, val)| *val = *val+rhs.array[idx]);
     }
 }
 ///i wonder when you will find this. 23:28 dec 27 2025
-impl<T:Numerical> SubAssign for Vector<T> {
+impl<T:Numerical, const LEN:usize> SubAssign for Vector<T, LEN> {
     fn sub_assign(&mut self, rhs: Self) {
         self.array.iter_mut().enumerate().for_each(|(idx, val)| *val = *val-rhs.array[idx]);
     }
 }
 
-impl<T:Numerical> Vector<T> {
+impl<T:Numerical, const LEN:usize> Vector<T, LEN> {
     
     /// performs the dot product of two vectors (1D matrices) 
-    pub fn dot(&self, other:&Self) -> Result<T, MatrixError> {
-        if self.num_items() != other.num_items() {
-            Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else {
-            Ok(sum_of_multiplications(&self.array, &other.array))
-        }
-    }
-
-    pub fn cross_product(&self, other:&Vector<T>) -> Result<Vector<T>, MatrixError> {
-        if !self.is_vec3() || !other.is_vec3() {
-            Err(MatrixError::InvalidItemNumbers(vec![self.num_items(), other.num_items()]))
-        } else {
-            let (ax, ay, az) = (self[0], self[1], self[2]);
-            let (bx, by, bz) = (other[0], other[1], other[2]);
-
-            let i = ay*bz - az*by;
-            let j = az*bx - ax*bz;
-            let k = ax*by - ay*bx;
-
-            Ok(Vector { array: vec![i, j, k] })
-        }
+    pub fn dot(&self, other:&Self) -> T {
+        sum_of_multiplications(&self.array, &other.array)
     }
 
     /// multiplies every element of an n-dimensional matrix by a scalar value
-    pub fn multiply_by_constant(self, scalar:T) -> Vector<T> {
+    pub fn multiply_by_constant(self, scalar:T) -> Self {
         let mut narr = self.array;
         (0..narr.len()).for_each(|i| narr[i] *= scalar);
         Vector {array:narr}
     }
 }
 
+impl<T:Numerical> Vector<T, 3> {
+    pub fn cross_product(&self, other:&Self) -> Self {
+        let (ax, ay, az) = (self[0], self[1], self[2]);
+        let (bx, by, bz) = (other[0], other[1], other[2]);
 
-impl<T:Float> Vector<T> {
+        let i = ay*bz - az*by;
+        let j = az*bx - ax*bz;
+        let k = ax*by - ay*bx;
+
+        Vector { array: vec![i, j, k] }
+    }
+}
+
+
+impl<T:Float, const LEN:usize> Vector<T, LEN> {
     pub fn magnitude(&self) -> T {
         T::sqrt(sum_of_multiplications(&self.array, &self.array))
     }
 
-    pub fn project_onto(&self, other:Vector<T>) -> Result<Vector<T>, MatrixError> {
-        let projection_factor = self.dot(&other)?/self.dot(&self)?;
-        Ok(other.multiply_by_constant(projection_factor))
+    pub fn project_onto(&self, other:Self) -> Self {
+        let projection_factor = self.dot(&other)/self.dot(&self);
+        other.multiply_by_constant(projection_factor)
     }
 
-    pub fn normalise(self) -> Result<Vector<T>, MatrixError> {
+    pub fn normalise(self) -> Result<Self, MatrixError> {
         if self.array.iter().all(|a| *a==T::zero()) {
             Err(MatrixError::NullVector)
         } else {

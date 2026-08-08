@@ -1,11 +1,11 @@
-use crate::matrices2::matrix::Matrix;
-use crate::matrices2::enums::MatrixError;
+use crate::matrix::S2;
+use crate::matrix::matrix::Matrix;
 use crate::vectors::Vector;
 
-impl Matrix<f32, 2> {
+impl Matrix<f32, 2, S2<4, 4>> {
     
     /// 3D scale matrix based on x, y, and z scale factors
-    pub fn scale(s:Vector<f32>) -> Matrix<f32, 2> {
+    pub fn scale(s:Vector<f32, 3>) -> Self {
         Matrix::from_2darray([
             [s[0],  0.,   0., 0.],
             [ 0., s[1],   0., 0.],
@@ -15,7 +15,7 @@ impl Matrix<f32, 2> {
     }
 
     /// 3D translation matrix based on x, y, and z translation factors
-    pub fn translate(t:Vector<f32>) -> Matrix<f32, 2> {
+    pub fn translate(t:Vector<f32, 3>) -> Self {
         Matrix::from_2darray([
             [1., 0., 0., t[0]],
             [0., 1., 0., t[1]],
@@ -25,7 +25,7 @@ impl Matrix<f32, 2> {
     }
 
     /// rx in degrees
-    pub fn rotate_about_x_axis(rx:f32) -> Matrix<f32, 2> {
+    pub fn rotate_about_x_axis(rx:f32) -> Self {
         let rrx = rx.to_radians();
         let rot_x = Matrix::from_2darray([
             [1.,        0.,            0., 0.],
@@ -37,7 +37,7 @@ impl Matrix<f32, 2> {
     }
 
     /// ry in degrees
-    pub fn rotate_about_y_axis(ry:f32) -> Matrix<f32, 2> {
+    pub fn rotate_about_y_axis(ry:f32) -> Self {
         let rry = ry.to_radians();
         let rot_y = Matrix::from_2darray([
             [    rry.cos(), 0., rry.sin(), 0.],
@@ -49,7 +49,7 @@ impl Matrix<f32, 2> {
     }
 
     /// rz in degrees
-    pub fn rotate_about_z_axis(rz:f32) -> Matrix<f32, 2> {
+    pub fn rotate_about_z_axis(rz:f32) -> Self {
         let rrz = rz.to_radians();
         let rot_z = Matrix::from_2darray([
             [rrz.cos(), -1.*rrz.sin(), 0., 0.],
@@ -60,7 +60,7 @@ impl Matrix<f32, 2> {
         rot_z
     }
 
-    pub fn rotate_about_arbitrary_axis(axis:Vector<f32>, rotation:f32) -> Matrix<f32, 2> {
+    pub fn rotate_about_arbitrary_axis(axis:Vector<f32, 3>, rotation:f32) -> Self {
         // turns the axis into a unit vector
         // simplifies the resultant matrix
         let axis = axis.normalise().unwrap();
@@ -90,12 +90,12 @@ impl Matrix<f32, 2> {
         rotation
     }
 
-    pub fn rotate_around_p_on_arbitrary_axis(p:Vector<f32>, axis:Vector<f32>, rotation:f32) -> Result<Matrix<f32, 2>, MatrixError<2>> {
+    pub fn rotate_around_p_on_arbitrary_axis(p:Vector<f32, 3>, axis:Vector<f32, 3>, rotation:f32) -> Self {
         
         // p in form (x_offset, y_offset, z_offset)
         // NOTE : for some reason, y and z switch in calculations
         // thus, p gets deconstructed as :
-        p.swap_items(1, 2)?;
+        p.swap_items(1, 2).unwrap();
         //let (px, pz, py) = p;
         //let (rx, ry, rz) = r;
         //println!("p' {}", p);
@@ -108,19 +108,19 @@ impl Matrix<f32, 2> {
         let rotate = Matrix::rotate_about_arbitrary_axis(axis, rotation);
         //println!("rotate axis {}", rotate);
 
-        Ok(return_to_pos.matmul(&rotate.matmul(&translate_to_zero)?)?)
+        return_to_pos.matmul(&rotate.matmul(&translate_to_zero))
     }
 
     /// 3D rotation matrix based on x, y, and z rotation factors
     /// (rx, ry, rz) are in degrees
     /// rotation occurs around the (relative) origin for the points
-    pub fn rotate(r:Vector<f32>) -> Result<Matrix<f32, 2>, MatrixError<2>> {
+    pub fn rotate(r:Vector<f32, 3>) -> Self {
         let (rx, ry, rz) = (r[0], r[1], r[2]);
         let rot_x = Matrix::rotate_about_x_axis(rx);
         let rot_y = Matrix::rotate_about_y_axis(ry);
         let rot_z = Matrix::rotate_about_z_axis(rz);
         
-        Ok(rot_z.matmul(&rot_y.matmul(&rot_x)?)?)
+        rot_z.matmul(&rot_y.matmul(&rot_x))
         //Ok(rot_x.matmul(&rot_y.matmul(&rot_z)?)?)
     }
 
@@ -131,28 +131,28 @@ impl Matrix<f32, 2> {
     /// first translates the position to be at the origin,
     /// then rotates it accordingly,
     /// lastly translates back to the original position
-    pub fn rotate_around_p(p:Vector<f32>, r:Vector<f32>) -> Result<Matrix<f32, 2>, MatrixError<2>> {
+    pub fn rotate_around_p(p:Vector<f32, 3>, r:Vector<f32, 3>) -> Self {
 
 
 
         // p in form (x_offset, y_offset, z_offset)
         // NOTE : for some reason, y and z switch in calculations
         // thus, p gets deconstructed as :
-        p.swap_items(1, 2)?;
+        p.swap_items(1, 2).unwrap();
         //let (px, pz, py) = p;
         //let (rx, ry, rz) = r;
 
         let return_to_pos     = Matrix::translate(p.clone());
         let translate_to_zero = Matrix::translate(p.multiply_by_constant(-1.0));
 
-        let rotate = Matrix::rotate(r)?;
+        let rotate = Matrix::rotate(r);
 
-        Ok(return_to_pos.matmul(&rotate.matmul(&translate_to_zero)?)?)
+        return_to_pos.matmul(&rotate.matmul(&translate_to_zero))
     }
 
     /// creates matrix that transforms between right-handed
     /// coordinate system and the opengl coordinate system
-    pub fn opengl_to_right_handed() -> Matrix<f32, 2> {
+    pub fn opengl_to_right_handed() -> Self {
         Matrix::from_2darray([
 
             // identity (but z is weird)

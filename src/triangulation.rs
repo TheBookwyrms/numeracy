@@ -1,5 +1,6 @@
-use crate::enums::MatrixError;
-use crate::matrices::Matrix;
+//use crate::enums::MatrixError;
+use crate::_matrix_second_version::Matrix;
+use crate::_matrix_second_version::MatrixError;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Point {
@@ -43,7 +44,7 @@ pub fn triangulate(
     p2:(f32, f32, f32, f32),
     p3:(f32, f32, f32, f32),
     p4:(f32, f32, f32, f32),
-) -> (Matrix<f32>, Result<Matrix<f32>, MatrixError>) {
+) -> (Matrix<f32, 2>, Result<Matrix<f32, 1>, MatrixError<2>>) {
 
     let v = 343.0;
 

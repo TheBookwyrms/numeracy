@@ -1,7 +1,13 @@
-use crate::functions_and_math::common_functions::*;
+use crate::{functions_and_math::{common_functions::*, traits::MathValue}, matrices, matrices2::Matrix};
+
+fn lines() {
+    println!();
+    println!();
+    println!();
+}
 
 pub fn functions() {
-    let a = number(5);
+    let a = 5.as_math_tree();
     let b = number(6);
     let c = number(7);
     let d = number(8);
@@ -27,4 +33,10 @@ pub fn functions() {
     for test in tests {
         println!("{}, {:?}, {:?}", test, test.get_variables(), test.get_variable_nature())
     }
+
+
+    lines();
+
+    let mat = matrices::Matrix::from_2darray([[number(3), number(2)]]).as_math_tree();
+    let mat = Matrix::from_1darray([number(3), number(2)]).as_math_item();
 }

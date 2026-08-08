@@ -1,4 +1,4 @@
-use crate::vectors::Vector;
+use crate::_vectors_first_version::Vector;
 
 /// takes a type 1 and a type 2
 /// generates the implementation for From<Vector<type 1>> for Vector<type 2>

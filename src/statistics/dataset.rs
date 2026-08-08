@@ -1,4 +1,4 @@
-use crate::{matrices::Matrix, traits::Float};
+use crate::{currently_unused___matrices::Matrix, traits::Float};
 
 pub struct Dataset<T:Float> {
     /// data is assumed to be in row form, ie

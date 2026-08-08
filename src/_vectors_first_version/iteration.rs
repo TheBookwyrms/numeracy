@@ -1,16 +1,16 @@
-use crate::vectors::Vector;
+use crate::_vectors_first_version::Vector;
 
 
-pub struct VectorIterator<'a, T, const LEN:usize> {
-    vectors: &'a Vector<T, LEN>,
+pub struct VectorIterator<'a, T> {
+    vectors: &'a Vector<T>,
     index: usize,
 }
 
-pub struct VectorIntoIterator<T, const LEN:usize> {
-    vectors:Vector<T, LEN>,
+pub struct VectorIntoIterator<T> {
+    vectors:Vector<T>,
 }
 
-impl<'a, T, const LEN:usize> Iterator for VectorIterator<'a, T, LEN> {
+impl<'a, T> Iterator for VectorIterator<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -24,7 +24,7 @@ impl<'a, T, const LEN:usize> Iterator for VectorIterator<'a, T, LEN> {
     }
 }
 
-impl<T, const LEN:usize> Iterator for VectorIntoIterator<T, LEN> {
+impl<T> Iterator for VectorIntoIterator<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -37,18 +37,18 @@ impl<T, const LEN:usize> Iterator for VectorIntoIterator<T, LEN> {
 }
 
 
-impl<T, const LEN:usize> IntoIterator for Vector<T, LEN> {
+impl<T> IntoIterator for Vector<T> {
     type Item = T;
-    type IntoIter = VectorIntoIterator<T, LEN>;
+    type IntoIter = VectorIntoIterator<T>;
     
-    fn into_iter(self) -> VectorIntoIterator<T, LEN> {
+    fn into_iter(self) -> VectorIntoIterator<T> {
         VectorIntoIterator { vectors: self }
     }
 }
 
 
-impl<T, const LEN:usize> Vector<T, LEN> {
-    pub fn iter(&'_ self) -> VectorIterator<'_, T, LEN> {
+impl<T> Vector<T> {
+    pub fn iter(&'_ self) -> VectorIterator<'_, T> {
         VectorIterator { vectors: self, index: 0 }
     }
 }

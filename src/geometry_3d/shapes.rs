@@ -1,4 +1,4 @@
-use crate::{traits::Float, vectors::Vector};
+use crate::{traits::Float, _vectors_first_version::Vector};
 
 pub struct Line<T:Float> {
     pub point:Vector<T>,

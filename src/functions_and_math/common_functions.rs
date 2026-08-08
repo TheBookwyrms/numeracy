@@ -1,98 +1,98 @@
 use crate::functions_and_math::enums::{Operation, MathItem};
 use crate::functions_and_math::function::{MathTree};
-use crate::functions_and_math::traits::{MathValue, Variable};
+use crate::functions_and_math::traits::{MathValue, ScalarValued, TraitValueNature};
 
 
-pub fn number<T:MathValue>(num:T) -> MathTree<T> {
-    MathTree::new(MathItem::Number(num), None)
+pub fn number<T:MathValue>(num:T) -> MathTree<T, ScalarValued> {
+    MathTree::new(MathItem::Number(num), vec![])
 }
 
-pub fn variable<T:MathValue>(var:char) -> MathTree<T> {
-    MathTree::new(MathItem::Variable(var), None)
-}
-
-
-pub fn add<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(left:TL, right:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Addition), Some(vec![left.as_math_item(), right.as_math_item()]))
-}
-
-pub fn subtract<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(left:TL, right:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Subtraction), Some(vec![left.as_math_item(), right.as_math_item()]))
-}
-
-pub fn multiply<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(left:TL, right:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Multiplication), Some(vec![left.as_math_item(), right.as_math_item()]))
-}
-
-pub fn divide<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(numerator:TL, denominator:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Division), Some(vec![numerator.as_math_item(), denominator.as_math_item()]))
-}
-
-pub fn pow<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(base:TL, exponent:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Exponentiation), Some(vec![base.as_math_item(), exponent.as_math_item()]))
+pub fn variable<T:MathValue, U:TraitValueNature>(var:char) -> MathTree<T, U> {
+    MathTree::new(MathItem::Variable(var, U::value_nature()), vec![])
 }
 
 
-pub fn cos<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Cosine), Some(vec![theta.as_math_item()]))
+pub fn add<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(left:TL, right:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Addition, V::value_nature()), vec![left.as_math_tree(), right.as_math_tree()])
 }
-pub fn sin<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Sine), Some(vec![theta.as_math_item()]))
+
+pub fn subtract<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(left:TL, right:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Subtraction, V::value_nature()), vec![left.as_math_tree(), right.as_math_tree()])
 }
-pub fn tan<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Tangent), Some(vec![theta.as_math_item()]))
+
+pub fn multiply<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(left:TL, right:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Multiplication, V::value_nature()), vec![left.as_math_tree(), right.as_math_tree()])
 }
-pub fn sec<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Secant), Some(vec![theta.as_math_item()]))
+
+pub fn divide<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(numerator:TL, denominator:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Division, V::value_nature()), vec![numerator.as_math_tree(), denominator.as_math_tree()])
 }
-pub fn csc<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Cosecant), Some(vec![theta.as_math_item()]))
-}
-pub fn cot<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Cotangent), Some(vec![theta.as_math_item()]))
+
+pub fn pow<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(base:TL, exponent:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Exponentiation, V::value_nature()), vec![base.as_math_tree(), exponent.as_math_tree()])
 }
 
 
-pub fn acos<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::ArcCosine), Some(vec![theta.as_math_item()]))
+pub fn cos<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Cosine, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn asin<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::ArcSine), Some(vec![theta.as_math_item()]))
+pub fn sin<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Sine, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn atan<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::ArcTangent), Some(vec![theta.as_math_item()]))
+pub fn tan<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Tangent, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn asec<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::ArcSecant), Some(vec![theta.as_math_item()]))
+pub fn sec<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Secant, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn acsc<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::ArcCosecant), Some(vec![theta.as_math_item()]))
+pub fn csc<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Cosecant, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn acot<T:MathValue<U=F>, F:MathValue>(theta:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::ArcCotangent), Some(vec![theta.as_math_item()]))
-}
-
-
-pub fn log10<T:MathValue<U=F>, F:MathValue>(val:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Log10), Some(vec![val.as_math_item()]))
-}
-pub fn ln<T:MathValue<U=F>, F:MathValue>(val:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Ln), Some(vec![val.as_math_item()]))
+pub fn cot<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Cotangent, V::value_nature()), vec![theta.as_math_tree()])
 }
 
 
-pub fn abs<T:MathValue<U=F>, F:MathValue>(val:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::AbsoluteValue), Some(vec![val.as_math_item()]))
+pub fn acos<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::ArcCosine, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn floor<T:MathValue<U=F>, F:MathValue>(val:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Floor), Some(vec![val.as_math_item()]))
+pub fn asin<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::ArcSine, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn ceil<T:MathValue<U=F>, F:MathValue>(val:T) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::Ceiling), Some(vec![val.as_math_item()]))
+pub fn atan<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::ArcTangent, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn floor_divide<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(numerator:TL, denominator:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::FloorDivision), Some(vec![numerator.as_math_item(), denominator.as_math_item()]))
+pub fn asec<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::ArcSecant, V::value_nature()), vec![theta.as_math_tree()])
 }
-pub fn remainder_divide<TL:MathValue<U=F>, TR:MathValue<U=F>, F:MathValue>(numerator:TL, denominator:TR) -> MathTree<F> {
-    MathTree::new(MathItem::Operation(Operation::RemainderDivision), Some(vec![numerator.as_math_item(), denominator.as_math_item()]))
+pub fn acsc<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::ArcCosecant, V::value_nature()), vec![theta.as_math_tree()])
+}
+pub fn acot<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(theta:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::ArcCotangent, V::value_nature()), vec![theta.as_math_tree()])
+}
+
+
+pub fn log10<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(val:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Log10, V::value_nature()), vec![val.as_math_tree()])
+}
+pub fn ln<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(val:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Ln, V::value_nature()), vec![val.as_math_tree()])
+}
+
+
+pub fn abs<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(val:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::AbsoluteValue, V::value_nature()), vec![val.as_math_tree()])
+}
+pub fn floor<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(val:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Floor, V::value_nature()), vec![val.as_math_tree()])
+}
+pub fn ceil<T:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(val:T) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::Ceiling, V::value_nature()), vec![val.as_math_tree()])
+}
+pub fn floor_divide<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(numerator:TL, denominator:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::FloorDivision, V::value_nature()), vec![numerator.as_math_tree(), denominator.as_math_tree()])
+}
+pub fn remainder_divide<TL:MathValue<U=F, V=V>, TR:MathValue<U=F, V=V>, F:MathValue, V:TraitValueNature>(numerator:TL, denominator:TR) -> MathTree<F, V> {
+    MathTree::new(MathItem::Operation(Operation::RemainderDivision, V::value_nature()), vec![numerator.as_math_tree(), denominator.as_math_tree()])
 }

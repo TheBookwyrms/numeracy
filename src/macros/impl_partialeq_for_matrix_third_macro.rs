@@ -1,4 +1,5 @@
-use crate::matrices2::Matrix;
+use crate::matrix::Matrix;
+use crate::matrix::ShapeTrait;
 use crate::general_math::comparisons::float_equality;
 
 
@@ -9,8 +10,8 @@ use crate::general_math::comparisons::float_equality;
 /// then they are equal
 macro_rules! impl_matrix_partialeq_exact_values {
     ($typename:ty) => {
-        impl<const N:usize> PartialEq for Matrix<$typename, N> {
-            fn eq(&self, other:&Matrix<$typename, N>) -> bool {
+        impl<const NDIMS:usize, U:ShapeTrait<NDIMS>> PartialEq for Matrix<$typename, NDIMS, U> {
+            fn eq(&self, other:&Matrix<$typename, NDIMS, U>) -> bool {
                 self.shape == other.shape && self.array == other.array
             }
         }
@@ -24,8 +25,8 @@ macro_rules! impl_matrix_partialeq_exact_values {
 /// then they are equal
 macro_rules! impl_matrix_partialeq_float_equality {
     ($typename:ty) => {
-        impl<const N:usize> PartialEq for Matrix<$typename, N> {
-            fn eq(&self, other:&Matrix<$typename, N>) -> bool {
+        impl<const NDIMS:usize, U:ShapeTrait<NDIMS>> PartialEq for Matrix<$typename, NDIMS, U> {
+            fn eq(&self, other:&Matrix<$typename, NDIMS, U>) -> bool {
                 let shape_eq = self.shape==other.shape;
                 let mut val_eq = vec![false;self.array.len()];
                 val_eq.iter_mut()

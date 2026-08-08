@@ -1,7 +1,7 @@
 use crate::general_math::cartesian_product;
-use crate::matrices2::matrix::Matrix;
-use crate::matrices2::enums::{MatrixError};
-use crate::vectors::Vector;
+use crate::_matrix_second_version::matrix::Matrix;
+use crate::_matrix_second_version::enums::{MatrixError};
+use crate::_vectors_first_version::Vector;
 
 use std::ops::{Index, IndexMut, Range};
 use std::fmt::{Debug, Display};
@@ -318,7 +318,7 @@ impl<T:Clone, const N:usize> Matrix<T, N> {
     }
 
 }
-impl<T:Clone> Matrix<T, 2> {    
+impl<T:Clone> Matrix<T, 2> {
     /// transpose a 2-dimensional matrix
     pub fn transpose(&self) -> Matrix<T, 2> {
         self.swap_axes(0,1)
@@ -498,5 +498,9 @@ impl<T:Clone, const N:usize> Matrix<T, N> {
         } else {
             Err(MatrixError::InvalidShape(new_shape))
         }
+    }
+
+    pub fn get_view_of_array(&self) -> &[T] {
+        &self.array
     }
 }
