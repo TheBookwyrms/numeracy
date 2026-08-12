@@ -1,4 +1,4 @@
-use crate::matrix::Matrix;
+use crate::matrices::Matrix;
 
 pub fn do_chem_stuff() {
 

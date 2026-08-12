@@ -1,5 +1,5 @@
-use crate::matrix::S2;
-use crate::matrix::matrix::Matrix;
+use crate::matrices::S2;
+use crate::matrices::matrix::Matrix;
 use crate::vectors::Vector;
 
 impl Matrix<f32, 2, S2<4, 4>> {

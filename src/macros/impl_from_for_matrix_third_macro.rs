@@ -1,4 +1,4 @@
-use crate::matrix::{Matrix, ShapeTrait};
+use crate::matrices::{Matrix, ShapeTrait};
 
 /// takes a type 1 and a type 2
 /// generates the implementation for From<Matrix<type 1>> for Matrix<type 2>

@@ -1,5 +1,5 @@
-use crate::matrix::Matrix;
-use crate::matrix::ShapeTrait;
+use crate::matrices::Matrix;
+use crate::matrices::ShapeTrait;
 use crate::general_math::comparisons::float_equality;
 
 

@@ -1,4 +1,4 @@
-use crate::matrix::Matrix;
+use crate::matrices::Matrix;
 use crate::vectors::Vector;
 pub fn rotation_stuff() {
     let u1 = Matrix::from_2darray([[0., 1., 0., 0.]]).transpose();

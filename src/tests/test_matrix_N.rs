@@ -1,4 +1,4 @@
-use numeracy::_matrix_second_version::{Matrix, MatrixForm};
+use crate::_matrix_second_version::{Matrix, MatrixForm};
 
 #[test]
 fn squeeze() {

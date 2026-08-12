@@ -1,4 +1,4 @@
-use numeracy::matrix::{InverseMethod, Matrix, MatrixForm, S2, S3};
+use crate::matrices::{InverseMethod, Matrix, MatrixForm, S2, S3};
 
 //#[test]
 //fn squeeze() {

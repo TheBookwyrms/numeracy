@@ -1,5 +1,7 @@
-use crate::matrix::matrix::Matrix;
-use crate::matrix::shape::{ShapeTrait, S1, S2, S3};
+use std::fmt::Debug;
+
+use crate::matrices::matrix::Matrix;
+use crate::matrices::shape::{ShapeTrait, S1, S2, S3};
 use crate::traits::Numerical;
 use crate::vectors::Vector;
 
@@ -72,5 +74,20 @@ impl<T:Numerical, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
     pub fn null(shape:U) -> Self {
         let arr = vec![T::zero(); shape.product()];
         Matrix { shape: shape, array: arr }
+    }
+}
+impl<T:Clone+Debug, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
+    pub fn array_of<const N:usize>(mat:Self) -> [Self; N] {
+        let matrices = (0..N)
+            .map(|_| mat.clone())
+            .collect::<Vec<_>>()
+            .try_into()
+            .unwrap();
+        matrices
+    }
+
+    /// creates a 1-dimensional matrix from a vec
+    pub fn from_vec_with_shape(vec:Vec<T>, shape:U) -> Self {
+        Matrix {shape, array: vec}
     }
 }

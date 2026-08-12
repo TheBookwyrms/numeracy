@@ -1,4 +1,11 @@
-pub mod _vectors_first_version;
+
+// old and therefore no longer pub
+mod _vectors_first_version;
+mod _matrix_first_version;
+mod _matrix_second_version;
+
+mod tests;
+
 //pub mod statistics;
 pub mod traits;
 pub mod enums;
@@ -15,8 +22,5 @@ pub mod triangulation;
 pub mod rotation_stuff;
 //pub mod function_stuff;
 
-pub mod _matrix_first_version;
-pub mod _matrix_second_version;
-
-pub mod matrix;
+pub mod matrices;
 pub mod vectors;

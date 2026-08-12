@@ -1,4 +1,4 @@
-use crate::matrix::ShapeTrait;
+use crate::matrices::ShapeTrait;
 
 #[derive(Debug, Clone)]
 /// struct to hold matrices of (mostly) arbitrary type T

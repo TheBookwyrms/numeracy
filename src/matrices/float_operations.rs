@@ -1,8 +1,8 @@
 use crate::general_math::comparisons::float_equality;
-use crate::matrix::{S1, S2};
-use crate::matrix::matrix::Matrix;
+use crate::matrices::{S1, S2};
+use crate::matrices::matrix::Matrix;
 use crate::traits::Float;
-use crate::matrix::enums::{MatrixError, MatrixForm, InverseMethod};
+use crate::matrices::enums::{MatrixError, MatrixForm, InverseMethod};
 
 
 impl<T:Float, const N:usize> Matrix<T, 2, S2<N, N>> {

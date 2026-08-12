@@ -1,7 +1,7 @@
 use crate::general_math::cartesian_product;
-use crate::matrix::matrix::Matrix;
-use crate::matrix::shape::{ShapeTrait, S1, S2, S3};
-use crate::matrix::enums::{MatrixError};
+use crate::matrices::matrix::Matrix;
+use crate::matrices::shape::{ShapeTrait, S1, S2, S3};
+use crate::matrices::enums::{MatrixError};
 use crate::vectors::Vector;
 
 use std::ops::{Index, IndexMut, Range};
@@ -207,7 +207,7 @@ impl<T, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
     
 
     /// get the size in memory of one item of the matrix's type T
-    pub fn dtype_memsize(&self) -> usize {
+    pub const fn dtype_memsize(&self) -> usize {
         let type_size = std::mem::size_of::<T>();
         type_size
     }

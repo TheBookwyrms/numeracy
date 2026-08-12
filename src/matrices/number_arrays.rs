@@ -1,9 +1,9 @@
-use crate::matrix::S2;
-use crate::matrix::shape::{S1, ShapeTrait};
+use crate::matrices::S2;
+use crate::matrices::shape::{S1, ShapeTrait};
 use crate::vectors::Vector;
-use crate::{matrix::matrix::Matrix};
+use crate::{matrices::matrix::Matrix};
 use crate::traits::Numerical;
-use crate::matrix::enums::MatrixError;
+use crate::matrices::enums::MatrixError;
 use std::ops::{Add, Mul, Neg, Sub, AddAssign};
 
 

@@ -1,5 +1,5 @@
 use crate::enums::MatrixError;
-use crate::matrix::{Matrix, S1};
+use crate::matrices::{Matrix, S1};
 use crate::vectors::vector::Vector;
 use crate::general_math::comparisons::max;
 

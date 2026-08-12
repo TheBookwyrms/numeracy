@@ -1,4 +1,4 @@
-use std::{assert_eq};
+use std::{assert_eq, fmt::Debug};
 
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -43,9 +43,10 @@ pub struct S5<const M:usize, const N:usize, const O:usize, const P:usize, const 
 //}
 
 //pub trait ShapeTrait {
-pub trait ShapeTrait<const NDIMS:usize>:PartialEq {
+pub trait ShapeTrait<const NDIMS:usize>:PartialEq+Debug+Copy+Clone {
     type ReverseOutput:ShapeTrait<NDIMS>;
     fn get_self() -> Self;
+    //const PRODUCT:usize;
     fn product(&self) -> usize;
     //fn ndims(&self) -> usize;
     fn get_index(&self, idx:usize) -> Option<usize>;
@@ -60,6 +61,7 @@ pub trait ShapeTrait<const NDIMS:usize>:PartialEq {
 impl<const M:usize> ShapeTrait<1> for S1<M> {
     fn get_self() -> Self { Self }
     fn assert_array_matches(arr:[usize; 1]) { assert_eq!(Self::get_self().as_array(), arr); }
+    //const PRODUCT:usize = M;
     fn product(&self) -> usize { M }
     fn get_index(&self, idx:usize) -> Option<usize> {
         match idx {
@@ -74,6 +76,7 @@ impl<const M:usize> ShapeTrait<1> for S1<M> {
 impl<const M:usize, const N:usize> ShapeTrait<2> for S2<M, N> {
     fn get_self() -> Self { Self }
     fn assert_array_matches(arr:[usize; 2]) { assert_eq!(Self::get_self().as_array(), arr); }
+    //const PRODUCT:usize = M*N;
     fn product(&self) -> usize { M*N }
     fn get_index(&self, idx:usize) -> Option<usize> {
         match idx {
@@ -89,6 +92,7 @@ impl<const M:usize, const N:usize> ShapeTrait<2> for S2<M, N> {
 impl<const M:usize, const N:usize, const O:usize> ShapeTrait<3> for S3<M, N, O> {
     fn get_self() -> Self { Self }
     fn assert_array_matches(arr:[usize; 3]) { assert_eq!(Self::get_self().as_array(), arr); }
+    //const PRODUCT:usize = M*N*O;
     fn product(&self) -> usize { M*N*O }
     fn get_index(&self, idx:usize) -> Option<usize> {
         match idx {
@@ -105,6 +109,7 @@ impl<const M:usize, const N:usize, const O:usize> ShapeTrait<3> for S3<M, N, O> 
 impl<const M:usize, const N:usize, const O:usize, const P:usize> ShapeTrait<4> for S4<M, N, O, P> {
     fn get_self() -> Self { Self }
     fn assert_array_matches(arr:[usize; 4]) { assert_eq!(Self::get_self().as_array(), arr); }
+    //const PRODUCT:usize = M*N*O*P;
     fn product(&self) -> usize { M*N*O*P }
     fn get_index(&self, idx:usize) -> Option<usize> {
         match idx {
@@ -122,6 +127,7 @@ impl<const M:usize, const N:usize, const O:usize, const P:usize> ShapeTrait<4> f
 impl<const M:usize, const N:usize, const O:usize, const P:usize, const Q:usize> ShapeTrait<5> for S5<M, N, O, P, Q> {
     fn get_self() -> Self { Self }
     fn assert_array_matches(arr:[usize; 5]) { assert_eq!(Self::get_self().as_array(), arr); }
+    //const PRODUCT:usize = M*N*O*P*Q;
     fn product(&self) -> usize { M*N*O*P*Q }
     fn get_index(&self, idx:usize) -> Option<usize> {
         match idx {

@@ -1,5 +1,5 @@
 //use crate::_matrix_second_version::Matrix;
-use crate::matrix::{Matrix, S1};
+use crate::matrices::{Matrix, S1};
 use crate::traits::Float;
 use crate::_vectors_first_version::vector::Vector;
 

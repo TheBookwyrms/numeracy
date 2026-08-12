@@ -76,3 +76,108 @@ impl Numerical for f64 {
     fn zero() -> Self {0.0}
     fn one() -> Self {1.0}
 }
+
+
+///// numerical trait for numerical data types that are valid in matrix
+//pub trait Numerical :
+//        Copy + Clone
+//        + Display + Debug
+//        + PartialEq + PartialOrd
+//        + Add<Output = Self> + Sub<Output = Self>
+//        + Mul<Output = Self> + Div<Output = Self>
+//        + AddAssign + SubAssign + MulAssign + DivAssign
+//        + Sum
+//    { 
+//        const ONE:Self;
+//        const ZERO:Self;
+//        //fn zero() -> Self;
+//        //fn one() -> Self;
+//    }
+//
+// 
+//impl Numerical for u8 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for u16 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for u32 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for usize {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for u64 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for u128 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//
+//impl Numerical for i8 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for i16 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for i32 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for isize {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for i64 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//impl Numerical for i128 {
+//    const ONE :Self = 1;
+//    const ZERO:Self = 0;
+//    //fn zero() -> Self {0}
+//    //fn one()  -> Self {1}
+//}
+//
+//impl Numerical for f32 {
+//    const ONE :Self = 1.0;
+//    const ZERO:Self = 0.0;
+//    //fn zero() -> Self {0.0}
+//    //fn one()  -> Self {1.0}
+//}
+//impl Numerical for f64 {
+//    const ONE :Self = 1.0;
+//    const ZERO:Self = 0.0;
+//    //fn zero() -> Self {0.0}
+//    //fn one()  -> Self {1.0}
+//}

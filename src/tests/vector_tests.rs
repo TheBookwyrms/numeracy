@@ -1,4 +1,4 @@
-use numeracy::_vectors_first_version::Vector;
+use crate::_vectors_first_version::Vector;
 
 #[test]
 fn dot1() {
