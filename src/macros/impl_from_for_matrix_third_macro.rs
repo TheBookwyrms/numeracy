@@ -1,4 +1,65 @@
-use crate::matrices::{Matrix, ShapeTrait};
+use crate::matrices::{Matrix, ShapeTrait, S2};
+use crate::vectors::Vector;
+
+
+
+
+
+
+macro_rules! impl_Matrix_1N_From_Vector {
+    ($type:ty) => {
+        impl<const ITEMS:usize> From<Vector<$type, ITEMS>> for Matrix<$type, 2, S2<1, ITEMS>> {
+            fn from(vec: Vector<$type, ITEMS>) -> Matrix<$type, 2, S2<1, ITEMS>> {
+                Matrix { shape:S2::<1, ITEMS>, array:vec.array }
+            }
+        }
+    };
+}
+
+
+// conflicting implementations for Matrix<$type, 2, S2<1, 1>>
+//macro_rules! impl_Matrix_N1_From_Vector {
+//    ($type:ty) => {
+//        impl<const ITEMS:usize> From<Vector<$type, ITEMS>> for Matrix<$type, 2, S2<ITEMS, 1>> {
+//            fn from(vec: Vector<$type, ITEMS>) -> Matrix<$type, 2, S2<ITEMS, 1>> {
+//                Matrix { shape:S2::<ITEMS, 1>, array:vec.array }
+//            }
+//        }
+//    };
+//}
+
+impl_Matrix_1N_From_Vector!(u8);
+impl_Matrix_1N_From_Vector!(u16);
+impl_Matrix_1N_From_Vector!(u32);
+impl_Matrix_1N_From_Vector!(u64);
+impl_Matrix_1N_From_Vector!(u128);
+impl_Matrix_1N_From_Vector!(usize);
+impl_Matrix_1N_From_Vector!(i8);
+impl_Matrix_1N_From_Vector!(i16);
+impl_Matrix_1N_From_Vector!(i32);
+impl_Matrix_1N_From_Vector!(i64);
+impl_Matrix_1N_From_Vector!(i128);
+impl_Matrix_1N_From_Vector!(isize);
+impl_Matrix_1N_From_Vector!(f32);
+impl_Matrix_1N_From_Vector!(f64);
+
+//impl_Matrix_N1_From_Vector!(u8);
+//impl_Matrix_N1_From_Vector!(u16);
+//impl_Matrix_N1_From_Vector!(u32);
+//impl_Matrix_N1_From_Vector!(u64);
+//impl_Matrix_N1_From_Vector!(u128);
+//impl_Matrix_N1_From_Vector!(usize);
+//impl_Matrix_N1_From_Vector!(i8);
+//impl_Matrix_N1_From_Vector!(i16);
+//impl_Matrix_N1_From_Vector!(i32);
+//impl_Matrix_N1_From_Vector!(i64);
+//impl_Matrix_N1_From_Vector!(i128);
+//impl_Matrix_N1_From_Vector!(isize);
+//impl_Matrix_N1_From_Vector!(f32);
+//impl_Matrix_N1_From_Vector!(f64);
+
+
+
 
 /// takes a type 1 and a type 2
 /// generates the implementation for From<Matrix<type 1>> for Matrix<type 2>
