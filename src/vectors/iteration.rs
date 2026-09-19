@@ -1,5 +1,5 @@
 use crate::vectors::Vector;
-
+use crate::matrices::ShapeTrait;
 
 pub struct VectorIterator<'a, T, const LEN:usize> {
     vectors: &'a Vector<T, LEN>,

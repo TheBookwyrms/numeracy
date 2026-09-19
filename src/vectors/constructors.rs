@@ -1,4 +1,4 @@
-use crate::matrices::{Matrix as Matrix3, S1};
+use crate::matrices::{Matrix as Matrix3, S1, ShapeTrait};
 use crate::traits::Float;
 use crate::vectors::vector::Vector;
 

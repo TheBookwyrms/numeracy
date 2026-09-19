@@ -138,85 +138,105 @@ impl<T:Numerical + Neg<Output = T>, const M:usize, const N:usize> Matrix<T, 2, S
 
 impl<T:Numerical + Neg<Output = T>, const N:usize> Matrix<T, 2, S2<N, N>> {
 
-    // just too hard to get working for the moment
-    // because without_rc needs a type of NEW_ORDER = ORDER-1
-    // and this can't be done without const generics recursively
-    ///// gets the minor of a matrix for row i and column j
-    //pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<2>> {
-    //    // actually of size (M = N - 1)
-    //    // reason no size parameter is given, is there is no point
-    //    // the size parameter will dissapear after the laplace expansion
-    //    // so just hide it with size N (even if that's a lie)
-    //    let minor = self.without_rc::<S2<N, N>>(row_i, col_j)?.laplace_expansion();
-    //    Ok(minor)
-    //}
-
-    // just too hard to get working for the moment
-    // because without_rc needs a type of NEW_ORDER = ORDER-1
-    // and this can't be done without const generics recursively
-    ///// gets the cofactor of a matrix for row i and column j
-    //pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<2>> {
-    //    // actually of size (M = N - 1)
-    //    // reason no size parameter is given, is there is no point
-    //    // the size parameter will dissapear after the laplace expansion
-    //    // so just hide it with size N (even if that's a lie)
-    //    let minor = self.without_rc(row_i, col_j)?;
-    //    let minor = minor.laplace_expansion();
-    //
-    //    let r = row_i;
-    //    let c = col_j;
-    //
-    //    let cofactor_multiplier = if (r+1)+(c+1) %2 == 0 { T::one() } else { -T::one() };
-    //
-    //    let cofactor = cofactor_multiplier * minor;
-    //    
-    //    // // FIX
-    //    // let cofactor = (-T::one()).pow((r+1)+(c+1)) * minor;
-    //    Ok(cofactor)
-    //}
-
-    // just too hard to get working for the moment
-    // because without_rc needs a type of NEW_ORDER = ORDER-1
-    // and this can't be done without const generics recursively
-    ///// get the determinant of a matrix via laplace expansion
-    //pub fn laplace_expansion(&self) -> T {
-    //    if N == 2 {
-    //        let a = self[[0, 0]];
-    //        let b = self[[0, 1]];
-    //        let c = self[[1, 0]];
-    //        let d = self[[1, 1]];
-    //        a*d - b*c
-    //    } else {
-    //        //let row_i = 0;
-    //        let mut determinant_sum = T::zero();
-    //
-    //        let i = self.array[0..N].iter().enumerate();
-    //        for (col_j, col_val) in i {
-    //            let cofactor = self.cofactor(0, col_j).unwrap();
-    //            determinant_sum += *col_val * cofactor;
-    //        }
-    //        
-    //                    panic!("HI");
-    //        determinant_sum
-    //    }
-    //}
-
-    // just too hard to get working for the moment
-    // because without_rc needs a type of NEW_ORDER = ORDER-1
-    // and this can't be done without const generics recursively
-    ///// get the matrix of cofactors of the original matrix
-    //pub fn cofactor_matrix(&self) -> Self {
-    //    let num_cofactors = self.num_items();
-    //    let mut cofactors = Vec::with_capacity(num_cofactors);
-    //    for i in 0..num_cofactors {
-    //        let indices = self.indices_of(i);
-    //        cofactors.push(self.cofactor(indices[0], indices[1]).unwrap());
-    //        //cofactors[i] = self.cofactor(indices[0], indices[1])?;
-    //    }
-    //
-    //    // transposed because of swapped linear algebra indexing conventions
-    //    Matrix {shape:self.shape, array:cofactors }.transpose()
-    //}
+    // // just too hard to get working for the moment
+    // // because without_rc needs a type of NEW_ORDER = ORDER-1
+    // // and this can't be done without const generics recursively
+    // ///// gets the minor of a matrix for row i and column j
+    // pub fn minor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<2>> where [(); N-1]:, [(); N-1]: {
+    //     // actually of size (M = N - 1)
+    //     // reason no size parameter is given, is there is no point
+    //     // the size parameter will dissapear after the laplace expansion
+    //     // so just hide it with size N (even if that's a lie)
+    //     let minor = self.without_rc(row_i, col_j)?.laplace_expansion();
+    //     Ok(minor)
+    // }
+// 
+    // // just too hard to get working for the moment
+    // // because without_rc needs a type of NEW_ORDER = ORDER-1
+    // // and this can't be done without const generics recursively
+    // ///// gets the cofactor of a matrix for row i and column j
+    // pub fn cofactor(&self, row_i:usize, col_j:usize) -> Result<T, MatrixError<2>> where [(); N-1]:, [(); N-1]: {
+    //     // actually of size (M = N - 1)
+    //     // reason no size parameter is given, is there is no point
+    //     // the size parameter will dissapear after the laplace expansion
+    //     // so just hide it with size N (even if that's a lie)
+    //     let minor = self.without_rc(row_i, col_j)?;
+    //     let minor = minor.laplace_expansion();
+    // 
+    //     let r = row_i;
+    //     let c = col_j;
+    // 
+    //     let cofactor_multiplier = if (r+1)+(c+1) %2 == 0 { T::one() } else { -T::one() };
+    // 
+    //     let cofactor = cofactor_multiplier * minor;
+    //     
+    //     // // FIX
+    //     // let cofactor = (-T::one()).pow((r+1)+(c+1)) * minor;
+    //     Ok(cofactor)
+    // }
+// 
+    // // just too hard to get working for the moment
+    // // because without_rc needs a type of NEW_ORDER = ORDER-1
+    // // and this can't be done without const generics recursively
+    // ///// get the determinant of a matrix via laplace expansion
+    // pub fn laplace_expansion(&self) -> T where [(); N-1]:, [(); N-1]: {
+    //     match N {
+    //         1 => self[[0, 0]],
+    //         2 => {
+    //             let a = self[[0, 0]];
+    //             let b = self[[0, 1]];
+    //             let c = self[[1, 0]];
+    //             let d = self[[1, 1]];
+    //             a*d - b*c
+    //         },
+    //         3.. => {
+    //             let mut determinant_sum = T::zero();
+    //     
+    //             let i = self.array[0..N].iter().enumerate();
+    //             for (col_j, col_val) in i {
+    //                 let cofactor = self.cofactor(0, col_j).unwrap();
+    //                 determinant_sum += *col_val * cofactor;
+    //             }
+// 
+    //             determinant_sum
+    //         },
+    //     }
+    //     //if N == 2 {
+    //     //    let a = self[[0, 0]];
+    //     //    let b = self[[0, 1]];
+    //     //    let c = self[[1, 0]];
+    //     //    let d = self[[1, 1]];
+    //     //    a*d - b*c
+    //     //} else {
+    //     //    //let row_i = 0;
+    //     //    let mut determinant_sum = T::zero();
+    // //
+    //     //    let i = self.array[0..N].iter().enumerate();
+    //     //    for (col_j, col_val) in i {
+    //     //        let cofactor = self.cofactor(0, col_j).unwrap();
+    //     //        determinant_sum += *col_val * cofactor;
+    //     //    }
+//// 
+    //     //    determinant_sum
+    //     //}
+    // }
+// 
+    // // just too hard to get working for the moment
+    // // because without_rc needs a type of NEW_ORDER = ORDER-1
+    // // and this can't be done without const generics recursively
+    // ///// get the matrix of cofactors of the original matrix
+    // pub fn cofactor_matrix(&self) -> Self {
+    //     let num_cofactors = self.num_items();
+    //     let mut cofactors = Vec::with_capacity(num_cofactors);
+    //     for i in 0..num_cofactors {
+    //         let indices = self.indices_of(i);
+    //         cofactors.push(self.cofactor(indices[0], indices[1]).unwrap());
+    //         //cofactors[i] = self.cofactor(indices[0], indices[1])?;
+    //     }
+    // 
+    //     // transposed because of swapped linear algebra indexing conventions
+    //     Matrix {shape:self.shape, array:cofactors }.transpose()
+    // }
 }
 
 impl<T:Numerical + Neg<Output = T>> Matrix<T, 1, S1<3>> {

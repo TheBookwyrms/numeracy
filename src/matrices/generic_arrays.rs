@@ -219,21 +219,22 @@ impl<T, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
         num_items*type_size
     }
 
-    // deprecated because it's too difficult to make work (seemingly)
-    //pub fn squeeze_axes<const NEWNDIMS:usize, V:ShapeTrait<NEWNDIMS>>(self) -> Matrix<T, NEWNDIMS, V> {
-    //    let mut new_shape = [0;NEWNDIMS];
-    //    self.shape.as_array().into_iter().filter(|val| val != &1).enumerate().for_each(|(idx, dim)| new_shape[idx] = dim);
-    //
-    //
-    //
-    //    //let new_shape = self.shape
-    //    //                                .clone()
-    //    //                                .into_iter()
-    //    //                                .filter(|val| val != &1)
-    //    //                                .collect::<[usize;K]>().try_into().unwrap();
-    //
-    //    Matrix { shape: new_shape, array: self.array }
-    //}
+    // just use reshape()
+    // // deprecated because it's too difficult to make work (seemingly)
+    // pub fn squeeze_axes<const NEWNDIMS:usize, V:ShapeTrait<NEWNDIMS>>(self) -> Matrix<T, NEWNDIMS, V> {
+    //     let mut new_shape = [0;NEWNDIMS];
+    //     self.shape.as_array().into_iter().filter(|val| val != &1).enumerate().for_each(|(idx, dim)| new_shape[idx] = dim);
+    // 
+    // 
+    // 
+    //     //let new_shape = self.shape
+    //     //                                .clone()
+    //     //                                .into_iter()
+    //     //                                .filter(|val| val != &1)
+    //     //                                .collect::<[usize;K]>().try_into().unwrap();
+    // 
+    //     Matrix { shape: new_shape, array: self.array }
+    // }
 }
 
 impl<T, const M:usize> Matrix<T, 1, S1<M>> {
@@ -258,7 +259,7 @@ impl<T:Clone, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
         for index in 0..self.array.len() {
 
             let indices = self.indices_of(index);
-            let mut swapped_indices = indices.clone();
+            let mut swapped_indices = indices;
             swapped_indices[axis1] = indices[axis2];
             swapped_indices[axis2] = indices[axis1];
             
@@ -319,13 +320,8 @@ impl<T:Clone, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
 impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {  
     /// transpose a 2-dimensional matrix
     pub fn transpose(self) -> Matrix<T, 2, S2<N, M>> {
-        self.swap_axes(0, 1)
-        //panic!(
-        //    "WAIT, this isn't the same as actual transpose with swap axes,
-        //    because it just changes the reading shape,
-        //    but doesn't actually perform the transposing operation"
-        //);
-        //Matrix { shape:S2::<N, M>, array:self.array, }
+        let a = self.swap_axes(0, 1);
+        a
     }
 
     /// get row i of a matrix
@@ -355,7 +351,7 @@ impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
     }
 
     /// returns the matrix without the specified row and column
-    pub fn without_rc<V:ShapeTrait<2>>(&self, row_i:usize, col_j:usize) -> Result<Matrix<T, 2, V>, MatrixError<2>> {
+    pub fn without_rc(&self, row_i:usize, col_j:usize) -> Result<Matrix<T, 2, S2::<{M-1}, {N-1}>>, MatrixError<2>> where [(); N-1]:, [(); M-1]: {
         if !(row_i<N && col_j<M) {
             Err(MatrixError::InvalidIndices([row_i, col_j]))
         } else {
@@ -376,12 +372,12 @@ impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
             }
 
             //V::assert_array_matches(new_shape);
-            Ok(Matrix {shape:V::get_self(), array:v })
+            Ok(Matrix {shape:S2::<{M-1}, {N-1}>, array:v })
         }
     }
 
     /// returns the matrix without the specified column
-    pub fn without_col<const V:usize>(&self, col_j:usize) -> Result<Matrix<T, 2, S2<V, N>>, MatrixError<2>> {
+    pub fn without_col(&self, col_j:usize) -> Result<Matrix<T, 2, S2<{M-1}, N>>, MatrixError<2>> {
         if !(col_j<M) {
             Err(MatrixError::InvalidIndex(col_j))
         } else {
@@ -398,12 +394,12 @@ impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
                 }
             }
             //S2::<V, N>::assert_array_matches(new_shape);
-            Ok(Matrix {shape:S2::<V, N>::get_self(), array:v })
+            Ok(Matrix {shape:S2::<{M-1}, N>, array:v })
         }
     }
 
     /// expands a matrix vertically (extending number of items per column)
-    pub fn expand_vertically<const V:usize, const HEIGHT:usize>(&self, other:Matrix<T, 2, S2<M, V>>) -> Matrix<T, 2, S2<M, HEIGHT>> {
+    pub fn expand_vertically<const V:usize>(&self, other:Matrix<T, 2, S2<M, V>>) -> Matrix<T, 2, S2<M, {N+V}>> {
 
 
         //let (self_x_len, other_x_len) = (M, M);
@@ -430,12 +426,12 @@ impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
         //    v.extend(other.array[(n*V)..((n+1)*V)].to_vec());
         //}
         //S2::<M, HEIGHT>::assert_array_matches([M, N+V]);
-        Matrix {shape:S2::<M, HEIGHT>::get_self(), array:v }
+        Matrix {shape:S2::<M, {N+V}>, array:v }
     }
 
 
     /// expands a matrix horizontally (extending number of items per row)
-    pub fn expand_horizontally<const V:usize, const WIDTH:usize>(&self, other:Matrix<T, 2, S2<V, N>>) -> Matrix<T, 2, S2<WIDTH, N>> {
+    pub fn expand_horizontally<const V:usize>(&self, other:Matrix<T, 2, S2<V, N>>) -> Matrix<T, 2, S2<{M+V}, N>> {
         //let (self_x_len, other_x_len) = (M, V);
         //let (self_y_len, other_y_len) = (N, N);
 
@@ -449,7 +445,7 @@ impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
             }
 
         //S2::<WIDTH, N>::assert_array_matches([M+V, N]);
-        Matrix {shape:S2::<WIDTH, N>::get_self(), array:v }
+        Matrix {shape:S2::<{M+V}, N>, array:v }
     }
 
     pub fn flip_vertically(self) -> Self {
@@ -467,6 +463,14 @@ impl<T:Clone, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
     }
 }
 impl<T:Clone, const NDIMS:usize, U:ShapeTrait<NDIMS>> Matrix<T, NDIMS, U> {
+
+    //pub fn reshape2<const NEWDIMS:usize, V:ShapeTrait<NEWDIMS>>(self, shape:V) -> Result<Matrix<T, NEWDIMS, V>, MatrixError<NEWDIMS>> where U:ShapeTrait<NDIMS>::<RPODUCT = V::PRODUCT >{
+    //    if self.shape.product() == shape.product() {
+    //        Ok(Matrix {shape, array:self.array})
+    //    } else {
+    //        Err(MatrixError::InvalidShape(shape.as_array()))
+    //    }
+    //}
 
     pub fn reshape<const NEWDIMS:usize, V:ShapeTrait<NEWDIMS>>(self, shape:V) -> Result<Matrix<T, NEWDIMS, V>, MatrixError<NEWDIMS>> {
         if self.shape.product() == shape.product() {

@@ -1,3 +1,15 @@
+#![feature(generic_const_exprs)]
+//#![feature(min_adt_const_params)]
+//#![feature(min_generic_const_args)]
+
+//#![feature(const_index)]
+//#![feature(const_array)]
+//#![feature(generic_const_args)]
+//#![feature(generic_const_items)]
+//#![feature(generic_const_parameter_types)]
+//#![feature(impl_trait_in_bindings)]
+
+
 
 // old and therefore no longer pub
 mod _vectors_first_version;

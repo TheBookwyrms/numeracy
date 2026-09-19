@@ -1,5 +1,6 @@
 mod matrix;
 mod shape;
+//mod shape_new;
 
 
 mod constructors;
@@ -14,4 +15,5 @@ mod enums;
 
 pub use matrix::Matrix;
 pub use shape::{ShapeTrait, S1, S2, S3, S4, S5};
+//pub use shape_new::{ShapeTrait, S1, S2, S3, S4, S5};
 pub use enums::{InverseMethod, MatrixError, MatrixForm};

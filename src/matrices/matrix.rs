@@ -13,4 +13,7 @@ pub struct Matrix<T, const NDIMS:usize, U:ShapeTrait<NDIMS>> {
 
     /// 1D container for the n-dimensional matrix
     pub array:Vec<T>,
+
+    // /// 1D container for the n-dimensional matrix
+    // pub array:Vector<T, {U::PRODUCT}>,
 }

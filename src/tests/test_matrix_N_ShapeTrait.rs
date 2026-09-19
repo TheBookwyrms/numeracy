@@ -124,7 +124,7 @@ fn expand_along_axis_test2() {
         [16, 17, 18],
     ]);
 
-    let extend_ax0 = m1.expand_horizontally::<3, 6>(m2);
+    let extend_ax0 = m1.expand_horizontally(m2);
     //println!("{}", extend_ax0);
 
     assert_eq!(extend_ax0, Matrix::from_2darray([
@@ -147,7 +147,7 @@ fn expand_along_axis_test1() {
         [13, 14, 15],
     ]);
 
-    let extend_ax1 = m1.expand_vertically::<2, 5>(m2);
+    let extend_ax1 = m1.expand_vertically(m2);
 
     //println!("{}", extend_ax1);
 
@@ -374,7 +374,7 @@ fn without_rc() {
         [5.5, 2.5, 6.3],
     ]);
 
-    let without = mat.without_rc::<S2<2, 3>>(0, 2).unwrap();
+    let without = mat.without_rc(0, 2).unwrap();
 
     assert_eq!(without, Matrix::from_2darray([
         [9.9, 2.3],

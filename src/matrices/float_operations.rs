@@ -9,23 +9,15 @@ impl<T:Float, const N:usize> Matrix<T, 2, S2<N, N>> {
 
     /// get the inverse of a matrix using gauss-jordan elimination
     /// on the matrix augmented by the identity
-    pub fn gauss_jordan_inverse<const TWO_N:usize>(&self) -> Result<Self, MatrixError<2>> {
-        let identity: Matrix<T, 2, S2<N, N>> = Matrix::identity();
+    pub fn gauss_jordan_inverse(&self) -> Result<Self, MatrixError<2>> where [(); N+N]: {
+        let identity = Matrix::identity();
         
-        // actually of size (M = N + N = 2*N)
-        // reason no size parameter is given for function, is there is no point
-        // the size parameter will only be used internally
-        // so just hide it with size N (even if that's a lie)
-        let augmented_matrix = self.expand_horizontally::<N, TWO_N>(identity.clone());
-        
-        
-        //let augmented_matrix = self.expand_along_axis(identity.clone(), 0)?;
-        //let augmented_shape = augmented_matrix.shape;
+        // of shape < 2*N, N >
+        let augmented_matrix = self.expand_horizontally(identity.clone());
         let reduced_echelon= augmented_matrix.reduced_echelon(MatrixForm::Standard);
         
-        let reduced_matrix_left = reduced_echelon.get_submatrix([0..TWO_N/2, 0..N])?;
-        
-        let reduced_matrix_right = reduced_echelon.get_submatrix([TWO_N/2..TWO_N, 0..N])?;
+        let reduced_matrix_left = reduced_echelon.get_submatrix([0..N, 0..N])?;
+        let reduced_matrix_right = reduced_echelon.get_submatrix([N..2*N, 0..N])?;
 
         let re_minus_id = reduced_matrix_left-identity;
         let null = Matrix::null(re_minus_id.shape);
@@ -40,10 +32,10 @@ impl<T:Float, const N:usize> Matrix<T, 2, S2<N, N>> {
     }
 
     /// get the inverse of a matrix
-    pub fn inverse<const TWO_N:usize>(&self, method:InverseMethod) -> Result<Self, MatrixError<2>> {
+    pub fn inverse<const TWO_N:usize>(&self, method:InverseMethod) -> Result<Self, MatrixError<2>> where [(); N+N]: {
         match method {
             InverseMethod::GaussJordanElimination => {
-                self.gauss_jordan_inverse::<TWO_N>()
+                self.gauss_jordan_inverse()
             },
             InverseMethod::LaplaceExpansion => {
                 todo!();
