@@ -1,43 +1,7 @@
 use std::fmt::Debug;
 
-use crate::{functions_and_math::{enums::{MathItem, MathItemStruct, ValueNature, VariableNature}, function::MathTree}, matrices::Matrix, matrices2, vectors::Vector};
+use crate::{functions_and_math::{enums::{MathItem, MathItemStruct, VariableNature}, function::MathTree}, matrices::{Matrix, ShapeTrait}, vectors::Vector};
 
-
-pub trait TraitValueNature:Clone+Debug {
-    fn value_nature() -> Self;
-    fn value_nature_enum<U:TraitValueNature>(nature:ValueNature) -> U;
-    //fn as_trait_type<U:TraitValueNature>(&self) -> U;
-}
-impl TraitValueNature for ScalarValued {
-    fn value_nature() -> Self { ScalarValued {} }
-    fn value_nature_enum<U:TraitValueNature>(nature:ValueNature) -> U {
-        match nature {
-            ValueNature::ScalarValued => U::value_nature_enum(nature),
-            ValueNature::VectorValued => U::value_nature_enum(nature),
-            ValueNature::MatrixValued => U::value_nature_enum(nature),
-        }
-    }
-}
-impl TraitValueNature for VectorValued {
-    fn value_nature() -> Self { VectorValued {} }
-    fn value_nature_enum<U:TraitValueNature>(nature:ValueNature) -> U {
-        match nature {
-            ValueNature::ScalarValued => U::value_nature_enum(nature),
-            ValueNature::VectorValued => U::value_nature_enum(nature),
-            ValueNature::MatrixValued => U::value_nature_enum(nature),
-        }
-    }
-}
-impl TraitValueNature for MatrixValued {
-    fn value_nature() -> Self { MatrixValued {} }
-    fn value_nature_enum<U:TraitValueNature>(nature:ValueNature) -> U {
-        match nature {
-            ValueNature::ScalarValued => U::value_nature_enum(nature),
-            ValueNature::VectorValued => U::value_nature_enum(nature),
-            ValueNature::MatrixValued => U::value_nature_enum(nature),
-        }
-    }
-}
 
 
 
@@ -54,34 +18,36 @@ pub struct MatrixValued {}
 
 pub trait MathValue : Debug+Sized+Clone {
     type U:MathValue;
-    type V:TraitValueNature;
     fn as_math_item_struct(self) -> MathItemStruct<Self::U>;
-    fn as_math_tree(self) -> MathTree<Self::U, Self::V>;
+    fn as_math_tree(self) -> MathTree<Self::U, >;
 }
 
 
-impl<T:MathValue, R:TraitValueNature+Debug+Clone> MathValue for MathItemStruct<T> {
+impl<T:MathValue> MathValue for MathItemStruct<T> {
     type U = T;
-    type V = R;
     fn as_math_item_struct(self) -> MathItemStruct<Self::U> {
         self
     }
-    fn as_math_tree(self) -> MathTree<Self::U, Self::V> {
-        MathTree::new(self.get_item(), self.get_thing(), Self::V::value_nature(), vec![])
+    fn as_math_tree(self) -> MathTree<Self::U,> {
+        MathTree::new(self.get_item(), self.get_thing(), vec![])
     }
 }
 
-impl<T:MathValue, R:TraitValueNature+Clone+Debug> MathValue for MathTree<T, R> {
+impl<T:MathValue> MathValue for MathTree<T> {
     type U = T;
-    type V = R;
+    fn as_math_item_struct(self) -> MathItemStruct<Self::U> {
+        MathItemStruct::new(self.item, self.thing)
+    }
     fn as_math_tree(self) -> Self { self }
 }
 
-impl<T:MathValue+Clone> MathValue for Matrix<T> {
+impl<T:MathValue+Clone, const NDIMS:usize, U:ShapeTrait<NDIMS>> MathValue for Matrix<T, NDIMS, U> {
     type U = T;
-    type V = MatrixValued;
-    fn as_math_tree(self) -> MathTree<T, Self::V> {
-        MathTree::new(MathItem::Matrix(self) , vec![])
+    fn as_math_item_struct(self) -> MathItemStruct<Self::U> {
+        MathItemStruct::new(MathItem::Matrix, self.thing)
+    }
+    fn as_math_tree(self) -> MathTree<T> {
+        MathTree::new(MathItem::Matrix , self, vec![])
     }
 }
 
@@ -95,40 +61,39 @@ impl<T:MathValue+Clone> MathValue for Matrix<T> {
 
 impl<T:MathValue+Clone+PartialEq> MathValue for Vector<T> {
     type U = T;
-    type V = VectorValued;
-    fn as_math_tree(self) -> MathTree<T, Self::V> {
+    fn as_math_tree(self) -> MathTree<T> {
         MathTree::new(MathItem::Vector(self) , vec![])
     }
 }
 
 
-pub trait Variable<T:MathValue, U:TraitValueNature> {
-    fn as_variable(self) -> MathTree<T, U>;
+pub trait Variable<T:MathValue> {
+    fn as_variable(self) -> MathTree<T>;
 }
 
-impl<T:MathValue, U:TraitValueNature> Variable<T, U> for char {
-    fn as_variable(self) -> MathTree<T, U> {
-        MathTree::new(MathItem::Variable(self, U::value_nature()), vec![])
+impl<T:MathValue> Variable<T> for char {
+    fn as_variable(self) -> MathTree<T> {
+        MathTree::new(MathItem::Variable(self), vec![])
     }
 }
 
-impl<T:MathValue, U:TraitValueNature> Variable<T, U> for &str {
-    fn as_variable(self) -> MathTree<T, U> {
+impl<T:MathValue> Variable<T> for &str {
+    fn as_variable(self) -> MathTree<T> {
         let mut chars = self.chars();
         let first_char = chars.nth(0).unwrap();
         let remaining_chars = chars;
         assert!(remaining_chars.count()==0);
-        MathTree::new(MathItem::Variable(first_char, U::value_nature()) , vec![])
+        MathTree::new(MathItem::Variable(first_char) , vec![])
     }
 }
 
-impl<T:MathValue, U:TraitValueNature> Variable<T, U> for String {
-    fn as_variable(self) -> MathTree<T, U> {
+impl<T:MathValue> Variable<T> for String {
+    fn as_variable(self) -> MathTree<T> {
         let mut chars = self.chars();
         let first_char = chars.nth(0).unwrap();
         let remaining_chars = chars;
         assert!(remaining_chars.count()==0);
-        MathTree::new(MathItem::Variable(first_char, U::value_nature()) , vec![])
+        MathTree::new(MathItem::Variable(first_char) , vec![])
     }
 }
 

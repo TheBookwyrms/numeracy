@@ -1,6 +1,6 @@
 use std::{fmt::{Debug, Display}, ops::{Add, Div, Mul, Neg, Sub}};
 
-use crate::{functions_and_math::{enums::{FunctionError, MathItem, Operation, ValueNature, VariableNature}, traits::{ScalarValued, TraitValueNature}}, traits::Numerical};
+use crate::{functions_and_math::{enums::{FunctionError, MathItem, Operation, VariableNature}, traits::{ScalarValued}}, traits::Numerical};
 use crate::functions_and_math::traits::MathValue;
 use crate::traits::Float;
 
@@ -14,41 +14,42 @@ use crate::traits::Float;
 
 
 #[derive(Debug, Clone)]
-pub struct MathTree<T:MathValue, OUTPUT:TraitValueNature> {
-    item:MathItem,
-    thing:T,
-    nature:OUTPUT,
-    children:Vec<MathTree<T, OUTPUT>>,
+pub struct MathTree<T:MathValue> {
+    pub item:MathItem,
+    pub thing:T,
+    pub children:Vec<MathTree<T, OUTPUT>>,
 }
 
-impl<T:MathValue, U:TraitValueNature> MathTree<T, U> {
+impl<T:MathValue> MathTree<T> {
     pub fn one<V:Numerical>() -> V { V::one() }
-    pub fn new(item:MathItem, thing:T, nature:U, children:Vec<MathTree<T, U>>) -> MathTree<T, U> {
-        MathTree { item, thing, nature, children }
+    pub fn new(item:MathItem, thing:T, children:Vec<MathTree<T>>) -> MathTree<T> {
+        MathTree { item, thing, children }
     }
     pub fn get_variables(&self) -> Vec<char> {
         let mut variables = vec![];
         match &self.item {
-            MathItem::Variable(var, _nature) => {
-                variables.push(*var);
+            MathItem::Variable(char) => {
+                variables.push(*char);
             },
-            MathItem::Operation(_op, _nature) => {
+            MathItem::Operation => {
                 for child in &self.children {
                     variables.extend(child.get_variables());
                 }
             },
-            MathItem::Matrix(matrix) => {
-                for item in matrix.array.clone() {
-                    variables.extend(item.as_math_tree().get_variables());
-                }
+            MathItem::Matrix => {
+                variables.extend(self.thing.as_math_tree().get_variables());
+                //for item in self.thing.array.clone() {
+                //    variables.extend(self.thing.as_math_tree().get_variables());
+                //}
             }
-            MathItem::Vector(vector) => {
-                for item in vector.array.clone() {
-                    variables.extend(item.as_math_tree().get_variables());
-                }
+            MathItem::Vector => {
+                variables.extend(self.thing.as_math_tree().get_variables());
+                //for item in self.thing.array.clone() {
+                //    variables.extend(item.as_math_tree().get_variables());
+                //}
             }
             //MathItem::Indeterminate(_) => {}
-            MathItem::Number(num) => {},
+            MathItem::Number => {},
         }
         variables.sort_unstable();
         variables.dedup();

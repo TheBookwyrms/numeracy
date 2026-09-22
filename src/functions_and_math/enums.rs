@@ -1,6 +1,5 @@
 use crate::functions_and_math::traits::{MathValue, MatrixValued, ScalarValued, TraitValueNature, VectorValued};
 use crate::matrices::Matrix;
-use crate::matrices2;
 use crate::vectors::Vector;
 
 //#[derive(Clone, Copy, Debug)]
@@ -30,11 +29,10 @@ impl<T:MathValue> MathItemStruct<T> {
 #[derive(Clone, Debug, Copy)]
 pub enum MathItem {
     Number,
-    Variable,
+    Variable(char),
     Operation,
     //Indeterminate,
     Matrix,
-    Matrix2,
     Vector,
 }
 //impl<T:MathValue> MathItem<T> {
@@ -56,12 +54,6 @@ pub enum VariableNature {
     MultiVariable,
 }
 
-#[derive(Debug, Clone, Copy)]
-pub enum ValueNature {
-    ScalarValued,
-    VectorValued,
-    MatrixValued,
-}
 
 #[derive(Clone, Copy, Debug)]
 pub enum Operation {

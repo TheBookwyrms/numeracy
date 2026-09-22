@@ -15,66 +15,81 @@ pub trait Numerical :
     { 
         fn zero() -> Self;
         fn one() -> Self;
+        fn pow(self, exponent:u32) -> Self;
     }
 
  
 impl Numerical for u8 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for u16 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for u32 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for usize {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for u64 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for u128 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 
 impl Numerical for i8 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for i16 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for i32 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for isize {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for i64 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 impl Numerical for i128 {
     fn zero() -> Self {0}
     fn one() -> Self {1}
+    fn pow(self, exponent:u32) -> Self { Self::pow(self, exponent) }
 }
 
 impl Numerical for f32 {
     fn zero() -> Self {0.0}
     fn one() -> Self {1.0}
+    fn pow(self, exponent:u32) -> Self { Self::powf(self, exponent as f32) }
 }
 impl Numerical for f64 {
     fn zero() -> Self {0.0}
     fn one() -> Self {1.0}
+    fn pow(self, exponent:u32) -> Self { Self::powf(self, exponent as f64) }
 }
 
 
