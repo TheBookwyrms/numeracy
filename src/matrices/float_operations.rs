@@ -179,11 +179,12 @@ impl<T:Float, const M:usize, const N:usize> Matrix<T, 2, S2<M, N>> {
             let _shape = self.shape;
             let echelon = self.echelon(MatrixForm::Standard);
             let rank = echelon.rank(MatrixForm::Echelon);
-            let reduced_echelon = echelon.reduced_echelon(MatrixForm::Echelon);
+            let reduced_echelon = echelon.clone().reduced_echelon(MatrixForm::Echelon);
 
             //let identity = Matrix::<T>::identity(self.shape[1]);
             let identity: Matrix<T, 2, S2<N, N>> = Matrix::identity(); // order = rank
-            let reduced_matrix_left = reduced_echelon.get_submatrix([0..rank, 0..rank])?;
+            //let reduced_matrix_left = reduced_echelon.get_submatrix([0..rank, 0..rank])?;
+            let reduced_matrix_left = reduced_echelon.get_submatrix([0..N, 0..N])?;
             
             let re_minus_id = reduced_matrix_left-identity;
             let null = Matrix::null(S2::<N, N>);

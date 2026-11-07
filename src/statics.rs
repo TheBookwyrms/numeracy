@@ -69,3 +69,15 @@ pub fn assignment_4_problem_4() {
     let solved = mat.solve().unwrap();
     println!("{}", solved);
 }
+
+pub fn assignment_8_question_4_part_a() {
+    let mat = Matrix::from_2darray([
+        [ 0.0,   1.0, -1.0,  -1.0,  400.0], //a
+        [ 1.0,  -0.4,  0.0, -0.25,  -80.0], //c
+        [ 1.0,   0.0, -0.4, -0.65,   80.0], //b
+        //[ 1.0,  -0.2, -0.2, -0.45,    0.0], //e
+        [ 1.0, -0.65, 0.25,   0.0, -180.0], //d
+    ]);
+    let solved = mat.solve().unwrap();
+    println!("{}", solved);
+}

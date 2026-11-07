@@ -18,7 +18,9 @@ pub fn main() {
 
     //matrix_fix_rotations::fixit();
 
-    statics::assignment_4_problem_1();
-    statics::assignment_4_problem_3();
-    statics::assignment_4_problem_4();
+    //statics::assignment_4_problem_1();
+    //statics::assignment_4_problem_3();
+    //statics::assignment_4_problem_4();
+
+    statics::assignment_8_question_4_part_a();
 }

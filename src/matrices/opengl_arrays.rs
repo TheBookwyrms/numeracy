@@ -60,6 +60,7 @@ impl Matrix<f32, 2, S2<4, 4>> {
         rot_z
     }
 
+    /// rotation in degrees
     pub fn rotate_about_arbitrary_axis(axis:Vector<f32, 3>, rotation:f32) -> Self {
         // turns the axis into a unit vector
         // simplifies the resultant matrix
