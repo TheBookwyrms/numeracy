@@ -9,6 +9,7 @@ mod number_arrays;
 
 mod float_operations;
 mod opengl_arrays;
+pub use opengl_arrays::{GraphicsMatrices, Grapics, ColumnMajor, RowMajor};
 
 mod enums;
 

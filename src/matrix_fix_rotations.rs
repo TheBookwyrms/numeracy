@@ -1,16 +1,16 @@
-use crate::{matrices::Matrix, vectors::Vector};
+use crate::{matrices::{GraphicsMatrices, Matrix, RowMajor, Grapics}, vectors::Vector};
 
 pub fn fixit() {
 
     let theta_x = 90.0;
-    let rx = Matrix::rotate_about_x_axis(theta_x);
+    let rx = GraphicsMatrices::<RowMajor>::rotate_about_x_axis(theta_x);
     let v = Matrix::from_2darray([[4., 3., 2., 1.]]).transpose();
 
     let v_rot = rx.matmul(&v);
 
     println!("{}", v_rot);
 
-    let rx_arb = Matrix::rotate_about_arbitrary_axis(Vector::from_1darray([1., 0., 0.]), theta_x);
+    let rx_arb = GraphicsMatrices::<RowMajor>::rotate_about_arbitrary_axis(Vector::from_1darray([1., 0., 0.]), theta_x);
     let v_rot_2 = rx_arb.matmul(&v);
     println!("{}", v_rot_2);
 

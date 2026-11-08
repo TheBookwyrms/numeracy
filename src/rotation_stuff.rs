@@ -1,9 +1,11 @@
 use crate::matrices::Matrix;
 use crate::vectors::Vector;
+use crate::matrices::{GraphicsMatrices,RowMajor};
+
 pub fn rotation_stuff() {
     let u1 = Matrix::from_2darray([[0., 1., 0., 0.]]).transpose();
-    let r1 = Matrix::rotate(Vector::from_1darray([0., 0., 45.]));
-    let r2 = Matrix::rotate(Vector::from_1darray([-45., 0., 0.]));
+    let r1 = GraphicsMatrices::<RowMajor>::rotate(Vector::from_1darray([0., 0., 45.]));
+    let r2 = GraphicsMatrices::<RowMajor>::rotate(Vector::from_1darray([-45., 0., 0.]));
     let u2 = r1.matmul(&u1);
     let u3 = r2.matmul(&u2);
     println!("u1 {}", u1);
@@ -19,10 +21,10 @@ pub fn rotation_stuff() {
     let pi = std::f32::consts::PI;
     let num_increments = 2.;
     for _ in 0..num_increments as i32 {
-        let rot = Matrix::rotate(Vector::from_1darray([pi/num_increments, 0., 0.]));
+        let rot = GraphicsMatrices::<RowMajor>::rotate(Vector::from_1darray([pi/num_increments, 0., 0.]));
         mat = mat.matmul(&rot);
     }
-    let pi_rot = Matrix::rotate(Vector::from_1darray([pi, 0., 0.]));
+    let pi_rot = GraphicsMatrices::<RowMajor>::rotate(Vector::from_1darray([pi, 0., 0.]));
     println!("one rot = {}", pi_rot);
     println!("incremented = {}", mat);
     println!("increment = {}, {} times", pi/num_increments, num_increments);
