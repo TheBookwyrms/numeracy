@@ -30,7 +30,12 @@ pub trait Grapics {
 }
 
 
+/// use ColumnMajor for things done in shaders (on gpu, with glsl)\
+/// use RowMajor when doing things on CPU with numeracy (modifying coordinates no shaders)
 pub struct RowMajor;
+
+/// use ColumnMajor for things done in shaders (on gpu, with glsl)\
+/// use RowMajor when doing things on CPU with numeracy (modifying coordinates no shaders)
 pub struct ColumnMajor;
 
 /// use ColumnMajor for things done in shaders (on gpu, with glsl)\
